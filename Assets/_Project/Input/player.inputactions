@@ -1,0 +1,35 @@
+{
+    "version": 1,
+    "name": "player",
+    "maps": [
+        {
+            "name": "player",
+            "id": "399bd1c2-2afa-499c-9291-4d71b897962c",
+            "actions": [
+                {
+                    "name": "hold",
+                    "type": "Button",
+                    "id": "7a7b9377-e2ae-41a6-ab8f-b65bc83ac064",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "1ef9b862-e8bb-4f6a-adc4-2e6a382054d9",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Hold",
+                    "processors": "",
+                    "groups": "",
+                    "action": "hold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
