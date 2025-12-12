@@ -167,7 +167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &79275858
 Transform:
   m_ObjectHideFlags: 0
@@ -201,7 +201,7 @@ MonoBehaviour:
   _lineRenderer: {fileID: 675840453}
   force: 2
   linestep: 0.05
-  trajectoryStepcount: 4
+  trajectoryStepcount: 1
 --- !u!1 &122826198
 GameObject:
   m_ObjectHideFlags: 0
@@ -1834,7 +1834,7 @@ MonoBehaviour:
   _lineRenderer: {fileID: 122826200}
   force: 5
   linestep: 0.05
-  trajectoryStepcount: 5
+  trajectoryStepcount: 2
 --- !u!1 &1031960348
 GameObject:
   m_ObjectHideFlags: 0
