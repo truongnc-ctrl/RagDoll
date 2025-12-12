@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1655063342731687173}
   - component: {fileID: 2452340621570393077}
   - component: {fileID: -3885596602189579329}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Circle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,7 @@ Rigidbody2D:
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 91ee6a69f14298d4a976e71a07cc4af3, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
