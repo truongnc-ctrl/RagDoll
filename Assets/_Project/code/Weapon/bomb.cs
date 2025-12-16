@@ -15,7 +15,7 @@ public class Bomb : MonoBehaviour
     void Start()
     {
         weaponInfo = GetComponent<WeaponInfo>();
-        if (weaponInfo == null) Debug.LogError("Thiếu script WeaponInfo trên bom!");
+        if (weaponInfo == null) Debug.LogError("Missing WeaponInfo on Bomb");
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -39,7 +39,6 @@ public class Bomb : MonoBehaviour
 
         foreach (Collider2D obj in objects)
         {
-
             Vector2 directionVector = obj.transform.position - transform.position;
             float distance = directionVector.magnitude;
             float proximity = Mathf.Clamp01(1 - (distance / fieldOfImpact));
