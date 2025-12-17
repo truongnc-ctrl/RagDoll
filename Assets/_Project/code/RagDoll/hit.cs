@@ -6,122 +6,155 @@ public class hit : MonoBehaviour
     [System.Serializable]
     public class BoneProfile
     {
-        public string namePart;      
-        public Transform bone;      
-        public float multiplier = 1f; 
+        public string namePart;
+        public Transform bone;
+        public float multiplier = 1f;
     }
 
     [Header("Body Parts Settings")]
-    public List<BoneProfile> bodyParts = new List<BoneProfile>(); 
+    public List<BoneProfile> bodyParts = new List<BoneProfile>();
 
     [Header("Settings")]
     public Rigidbody2D hipsRigidbody;
     public float damageThresholdToRagdoll = 20f;
     public float minKnockbackForce = 5f;
 
-    private float minDamageVelocity; 
-    private float maxDamageVelocity; 
-
+    private float minDamageVelocity;
+    private float maxDamageVelocity;
+    
     private Health _health;
-    private RagdollReset ragdollReset; 
-    private Collider2D collider_;
-    public bool stand;
-    public bool iscollision;
+    private RagdollReset ragdollReset;
+    private Rigidbody2D mainRb; 
+    
+    public bool stand = true; 
     private Line line;
 
     void Start()
     {
         ragdollReset = GetComponent<RagdollReset>();
-        collider_ = GetComponent<Collider2D>(); 
-        stand = true;
-        _health = GetComponentInChildren<Health>(); 
+        mainRb = GetComponent<Rigidbody2D>(); 
+        _health = GetComponentInChildren<Health>();
         line = FindFirstObjectByType<Line>();
-        iscollision = false;
+        
+        stand = true;
 
         if (line != null)
         {
-            maxDamageVelocity = line.maxPower; 
-            minDamageVelocity = maxDamageVelocity * 0.1f; 
+            maxDamageVelocity = line.maxPower;
+            minDamageVelocity = maxDamageVelocity * 0.1f;
         }
         else
         {
             maxDamageVelocity = 20f;
             minDamageVelocity = 2f;
         }
+        SetupBodyParts();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    void SetupBodyParts()
     {
-        iscollision = true;
-        
-        if (collision.collider.gameObject.layer == LayerMask.NameToLayer("weapon"))
-        {   
-            WeaponInfo weaponInfo = collision.collider.GetComponent<WeaponInfo>();
-            
-            if (weaponInfo != null && weaponInfo._weapon != null)
-            {
-                float baseDamage = weaponInfo._weapon.damage;
-                float baseForce = weaponInfo._weapon.knockbackForce;
-                float finalDamage = baseDamage;
-                float finalForce = baseForce;
-
-                if (weaponInfo._weapon.currentWeaponType == TypeWeapon.nade)
-                {
-                    finalDamage = baseDamage * (weaponInfo._weapon is not null ? 0.2f : 1f);
-                    finalForce = baseForce * 0.2f;
-                }
-
-                // 2. Tính toán lực va chạm
-                float impactVelocity = collision.relativeVelocity.magnitude;
-                if (impactVelocity < minDamageVelocity) return;
-
-                float velocityFactor = Mathf.Clamp01((impactVelocity - minDamageVelocity) / (maxDamageVelocity - minDamageVelocity));
-                finalDamage *= velocityFactor;
-                finalForce *= velocityFactor;
-                // Lấy điểm va chạm đầu tiên
-                Vector2 hitPoint = collision.GetContact(0).point;
-                
-                // Tìm xương gần nhất
-                float partMultiplier = GetMultiplierFromClosestBone(hitPoint);
-                
-                finalDamage *= partMultiplier; // Nhân hệ số vào dame cuối
-                Vector2 dir = (transform.position - collision.transform.position).normalized;
-                if (finalDamage > 0)
-                {
-                    ReceiveImpact(finalDamage, finalForce, dir);
-                }
-            }
-        }
-    }
-
-    float GetMultiplierFromClosestBone(Vector2 hitPoint)
-    {
-        if (bodyParts.Count == 0) return 1f; 
-        float closestSqrDistance = float.MaxValue; 
-        float selectedMultiplier = 1f;
-        string hitPartName = "None"; 
-
         foreach (var part in bodyParts)
         {
-            if (part.bone == null) continue;
-            float sqrDist = (hitPoint - (Vector2)part.bone.position).sqrMagnitude;
-            if (sqrDist < closestSqrDistance)
+            if (part.bone != null)
             {
-                closestSqrDistance = sqrDist;
-                selectedMultiplier = part.multiplier;
-                hitPartName = part.namePart;
+                if (part.bone.GetComponent<Collider2D>() == null)
+                {
+                    Debug.LogWarning($"Cảnh báo: Xương {part.namePart} chưa có Collider2D! Nó sẽ không nhận được va chạm.");
+                }
+                BodyPartHit partHit = part.bone.GetComponent<BodyPartHit>();
+                if (partHit == null)
+                {
+                    partHit = part.bone.gameObject.AddComponent<BodyPartHit>();
+                }
+                partHit.mainScript = this;
+                partHit.damageMultiplier = part.multiplier;
             }
         }
-
-        Debug.Log($"Trúng phần: {hitPartName} (SqrDist: {closestSqrDistance})");
-        return selectedMultiplier;
     }
 
-    public void ReceiveImpact(float damage, float knockback, Vector2 direction)
+    public void SetStand(bool state)
     {
-        if (ragdollReset != null && ragdollReset.IsHoldingLine()) return;
+        stand = state;
+    }
 
-        if (_health != null) _health.TakeDamage(damage);
+    public void OnChildCollision(BodyPartHit partHit, Collision2D collision)
+    {
+        if (collision.collider.gameObject.layer != LayerMask.NameToLayer("weapon")) return;
+        if (mainRb != null && stand) 
+        {
+            mainRb.linearVelocity = Vector2.zero; 
+        }
+
+        WeaponInfo weaponInfo = collision.collider.GetComponent<WeaponInfo>();
+        Knife incomingKnife = collision.collider.GetComponent<Knife>();
+        ProjectileRotation projectileRotation = collision.collider.GetComponent<ProjectileRotation>();
+        
+        if (projectileRotation != null) projectileRotation.SetRotation(false);
+        if (incomingKnife != null && incomingKnife.isStuck) return;
+
+        if (weaponInfo != null && weaponInfo._weapon != null)
+        {
+            float baseDamage = weaponInfo._weapon.damage;
+            float baseForce = weaponInfo._weapon.knockbackForce;
+            
+            if (weaponInfo._weapon.currentWeaponType == TypeWeapon.nade)
+            {
+                baseDamage *= 0.2f;
+                baseForce *= 0.2f;
+            }
+
+            float impactVelocity = collision.relativeVelocity.magnitude;
+            if (impactVelocity < minDamageVelocity && incomingKnife == null) return;
+
+            float velocityFactor = Mathf.Clamp01((impactVelocity - minDamageVelocity) / (maxDamageVelocity - minDamageVelocity));
+            float finalDamage = baseDamage * velocityFactor;
+            float finalForce = baseForce * velocityFactor;
+
+            finalDamage *= partHit.damageMultiplier;
+            
+            Vector2 knockbackDir = (partHit.transform.position - collision.transform.position).normalized;
+
+            if (finalDamage > 0)
+            {
+                ReceiveImpact(finalDamage, finalForce, knockbackDir, partHit.transform);
+            }
+
+            if (incomingKnife != null && weaponInfo._weapon.currentWeaponType == TypeWeapon.knife)
+            {
+                HandleKnifeStick(incomingKnife, finalDamage, partHit.transform, collision);
+            }
+        }
+    }
+
+    private void HandleKnifeStick(Knife incomingKnife, float finalDamage, Transform hitBoneTransform, Collision2D collision)
+    {
+         if (finalDamage >= incomingKnife.minDamageToStick)
+         {
+             Vector2 contactPoint = collision.GetContact(0).point;
+             Transform targetParent = (hitBoneTransform != null) ? hitBoneTransform : transform;
+
+             bool isPlayer = (gameObject.layer == LayerMask.NameToLayer("Player"));
+             float stickAngle = incomingKnife.fixedStuckAngle;
+             bool shouldFlipX = false; 
+
+             if (isPlayer)
+             {
+                 stickAngle = -incomingKnife.fixedStuckAngle;
+                 shouldFlipX = true; 
+             }
+
+             incomingKnife.SpawmObject(targetParent, contactPoint, stickAngle, shouldFlipX);
+         }
+    }
+
+
+    public void ReceiveImpact(float damage, float knockback, Vector2 direction, Transform hitBone)
+    {
+
+        if (_health != null) 
+        {
+            _health.TakeDamage(damage);
+        }
         else
         {
             IDamageable damageable = GetComponent<IDamageable>();
@@ -130,18 +163,22 @@ public class hit : MonoBehaviour
 
         if (damage >= damageThresholdToRagdoll || knockback >= minKnockbackForce)
         {
-            if (ragdollReset != null) ragdollReset.TriggerFall(); 
-            
-            if (stand) 
+            stand = false; 
+
+            if (ragdollReset != null)
             {
-                stand = false;
-                if (collider_ != null) collider_.enabled = false;
+                ragdollReset.TriggerFall(); 
             }
 
-            if (hipsRigidbody != null && knockback >= minKnockbackForce)
+            Rigidbody2D targetRb = null;
+            if (hitBone != null) targetRb = hitBone.GetComponent<Rigidbody2D>();
+            
+            if (targetRb == null) targetRb = hipsRigidbody;
+
+            if (targetRb != null)
             {
-                hipsRigidbody.linearVelocity = Vector2.zero; 
-                hipsRigidbody.AddForce(direction * knockback, ForceMode2D.Impulse);
+                targetRb.linearVelocity = Vector2.zero; 
+                targetRb.AddForce(direction * knockback, ForceMode2D.Impulse);
             }
         }
     }
@@ -149,9 +186,9 @@ public class hit : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        foreach(var part in bodyParts)
+        foreach (var part in bodyParts)
         {
-            if(part.bone != null) Gizmos.DrawWireSphere(part.bone.position, 0.2f);
+            if (part.bone != null) Gizmos.DrawWireSphere(part.bone.position, 0.2f);
         }
     }
 }

@@ -15,4 +15,5 @@ MonoBehaviour:
   name_weapon: Ball
   damage: 10
   currentWeaponType: 0
-  knockbackForce: 100
+  knockbackForce: 20
+  DamageCollisionNade: 0

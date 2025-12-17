@@ -1,25 +1,21 @@
-using Unity.Mathematics;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Balance : MonoBehaviour
 {
-    [SerializeField]public float targetrotaion;
-    [SerializeField] private float force;
+    public float targetRotation;
+    public Rigidbody2D rb;
+    public float force;
 
-    Rigidbody2D rb;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = gameObject.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-    }
-    void FixedUpdate()
-    {
-        rb.MoveRotation(Mathf.LerpAngle(rb.rotation,targetrotaion,force* Time.deltaTime));
+        rb.MoveRotation(Mathf.LerpAngle(rb.rotation, targetRotation, force * Time.deltaTime));
     }
 }

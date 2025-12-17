@@ -4,18 +4,15 @@ using UnityEngine.InputSystem.Interactions;
 public class Animation_throw : MonoBehaviour
 {
     Animator animator;
-    [SerializeField] Line line;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    Line line;
     void Start()
     {
         animator = GetComponent<Animator>();
         line = GetComponentInChildren<Line>();
     }
-
-    // Update is called once per frame
     void Update()
     {
-        if(line.hold == true)
+        if(line.isHolding == true)
         {
             animator.SetBool("hold",true);
         }

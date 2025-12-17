@@ -1,90 +1,105 @@
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
 
 public class Line : MonoBehaviour
 {
-    [SerializeField] Transform PrefabAmmo;
-    [SerializeField] Transform spawmpoint;
-    [SerializeField] LineRenderer _lineRenderer;
-    [SerializeField] float force = 0.5f; 
-    [SerializeField] float linestep = 0.05f; 
-    [SerializeField] int trajectoryStepcount = 5; 
+    [Header("References")]
+    [SerializeField] ProjectileBehavior prefabAmmo; 
+    [SerializeField] Transform spawnPoint;
+    [SerializeField] LineRenderer lineRenderer;
     
-    public float maxPower = 10f; 
+    [Header("Settings")]
+    [SerializeField] float force = 5f; 
+    public float maxPower = 15f; 
+    
+    [Header("Trajectory Settings")]
+    [SerializeField] int trajectoryStepCount = 15; 
+    [SerializeField] float lineStep = 0.05f; 
 
-    public bool hold;
-    
-    Vector2 velocity, startMousePos, currentMousePos;
-    
+    [Header("Throw Settings")]
+    [SerializeField] float colliderDelay = 0.2f; 
+    public bool isHolding;
+    private Vector2 startMousePos, currentMousePos, velocity;
+    private ProjectileBehavior currentProjectile;
+
     void Start()
     {
-
+        if(lineRenderer != null) lineRenderer.positionCount = 0;
+        isHolding = false;
     }
 
     void Update()
     {
+        HandleInput();
+    }
+
+    void HandleInput()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             startMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            SpawnProjectile();
+            isHolding = true;
         }
-
-        if (Input.GetMouseButton(0))
+        if (isHolding && currentProjectile != null)
         {
             currentMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             velocity = (currentMousePos - startMousePos) * force;
             velocity = Vector2.ClampMagnitude(velocity, maxPower);
             
-            hold = true;
-    
-            drawTrajectory();
-            rotate(); 
+            DrawTrajectory(); 
+            RotateLauncher();
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            hold = false;
-            FindProjecttilte();
-            clear();
+            if (isHolding) 
+            {
+                ReleaseProjectile();
+                ClearLine();
+                isHolding = false;
+            }
         }
     }
 
-    private void drawTrajectory()
+    void SpawnProjectile()
     {
-        Vector3[] positions = new Vector3[trajectoryStepcount];
-        for (int i = 0; i < trajectoryStepcount; i++)
+        currentProjectile = Instantiate(prefabAmmo, spawnPoint.position, Quaternion.identity);
+        currentProjectile.transform.SetParent(spawnPoint);
+        currentProjectile.Prepare();
+    }
+
+    void ReleaseProjectile()
+    {
+        if (currentProjectile == null) return;
+
+        currentProjectile.Throw(velocity, colliderDelay);
+
+        currentProjectile = null;
+    }
+
+    private void DrawTrajectory()
+    {
+        Vector3[] positions = new Vector3[trajectoryStepCount];
+        for (int i = 0; i < trajectoryStepCount; i++)
         {
-            float t = i * linestep; 
-    
-            Vector3 pos = (Vector2)spawmpoint.position + velocity * t + 0.5f * Physics2D.gravity * t * t;
+            float t = i * lineStep; 
+            // Công thức vật lý: s = ut + 1/2at^2
+            Vector3 pos = (Vector2)spawnPoint.position + velocity * t + 0.5f * Physics2D.gravity * t * t;
             positions[i] = pos;
         }
-        _lineRenderer.positionCount = trajectoryStepcount;
-        _lineRenderer.SetPositions(positions);
+        lineRenderer.positionCount = trajectoryStepCount;
+        lineRenderer.SetPositions(positions);
     }
 
-    private void rotate()
+    private void RotateLauncher()
     {
+
         float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
-    private void FindProjecttilte()
+    private void ClearLine()
     {
-        Transform pr = Instantiate(PrefabAmmo, spawmpoint.position, Quaternion.identity);
-        Rigidbody2D rb = pr.GetComponent<Rigidbody2D>();
-
-        if (rb != null)
-        {
-            rb.linearVelocity = velocity; 
-        }
-        else
-        {
-            Debug.LogError("PrefabAmmo thiếu Rigidbody2D!");
-        }
-    }
-
-    private void clear()
-    {
-        _lineRenderer.positionCount = 0;
+        lineRenderer.positionCount = 0;
     }
 }

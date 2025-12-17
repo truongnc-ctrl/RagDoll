@@ -1,148 +1,104 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class RagdollReset : MonoBehaviour
 {
-    [Header("Setup")]
-    public Transform hipsBone;
+    [Header("Settings")]
     public float timeToReset = 2.0f;
+    public float standUpDuration = 1.0f; // Thời gian để gồng người đứng dậy từ từ (chống nhảy)
 
-    private struct BoneTransform
+    private class BalanceData
     {
-        public Vector3 localPosition;
-        public Quaternion localRotation;
+        public Balance script;
+        public float originalForce;
     }
 
-    private Transform[] allBones;
-    private BoneTransform[] initialBoneTransforms;
-    private Rigidbody2D[] ragdollRigidbodies;
-    private Collider2D[] ragdollColliders;
-    private Rigidbody2D mainRb;
-    private Collider2D mainCollider;
-    
+    private List<BalanceData> _balanceDataList = new List<BalanceData>();
+    private Rigidbody2D[] _allRbs;
+    private bool isDead = false;
     private bool isRagdolling = false;
-    private bool isDead = false; 
-    private Line _line;
-    private hit _hitScript;
 
     void Awake()
     {
-        mainRb = GetComponent<Rigidbody2D>();
-        mainCollider = GetComponent<Collider2D>();
-        _hitScript = GetComponent<hit>();
-        
-        allBones = GetComponentsInChildren<Transform>();
-        ragdollRigidbodies = GetComponentsInChildren<Rigidbody2D>();
-        ragdollColliders = GetComponentsInChildren<Collider2D>();
-        _line = FindFirstObjectByType<Line>();
-
-        initialBoneTransforms = new BoneTransform[allBones.Length];
-        for (int i = 0; i < allBones.Length; i++)
+        _allRbs = GetComponentsInChildren<Rigidbody2D>();
+        var balances = GetComponentsInChildren<Balance>();
+        foreach (var b in balances)
         {
-            initialBoneTransforms[i] = new BoneTransform
-            {
-                localPosition = allBones[i].localPosition,
-                localRotation = allBones[i].localRotation
-            };
+            _balanceDataList.Add(new BalanceData 
+            { 
+                script = b, 
+                originalForce = b.force 
+            });
         }
-
-        SetRagdollState(false);
     }
 
-    public bool IsHoldingLine()
-    {
-        return _line != null && _line.hold;
-    }
- 
     public void TriggerFall()
     {
-        if (isRagdolling || isDead) return; 
-        StartCoroutine(FallAndStandUpRoutine());
+        if (isRagdolling || isDead) return;
+        StartCoroutine(FallAndStandRoutine());
     }
 
     public void TriggerDeath()
     {
         if (isDead) return;
-        isDead = true; 
-        isRagdolling = true;
-        StopAllCoroutines(); 
-        SetRagdollState(true);
+        isDead = true;
+        ToggleBalance(false);
     }
 
-    IEnumerator FallAndStandUpRoutine()
+    IEnumerator FallAndStandRoutine()
     {
         isRagdolling = true;
-        SetRagdollState(true);
+
+        // 1. NGÃ: Tắt Balance để rơi tự do
+        ToggleBalance(false);
 
         yield return new WaitForSeconds(timeToReset);
 
-        if (isDead) yield break;
-
-        Vector3 ragdollHipsPosition = hipsBone.position;
-
-        foreach (var rb in ragdollRigidbodies)
+        if (!isDead)
         {
-            rb.linearVelocity = Vector2.zero;
-            rb.angularVelocity = 0f;
-        }
-
-        transform.rotation = Quaternion.identity;
-
-        for (int i = 0; i < allBones.Length; i++)
-        {
-            if (allBones[i] != transform)
+            // 2. CHUẨN BỊ ĐỨNG:
+            // Quan trọng: Triệt tiêu mọi vận tốc quán tính để nhân vật nằm im trước khi dậy
+            foreach (var rb in _allRbs)
             {
-                allBones[i].localPosition = initialBoneTransforms[i].localPosition;
-                allBones[i].localRotation = initialBoneTransforms[i].localRotation;
+                rb.linearVelocity = Vector2.zero; // Unity 6 dùng linearVelocity
+                rb.angularVelocity = 0f;
             }
-        }
+            ToggleBalance(true, 0f);
 
-        Vector3 resetHipsPosition = hipsBone.position;
-        Vector3 shiftAmount = ragdollHipsPosition - resetHipsPosition;
-        transform.position += shiftAmount;
-
-        SetRagdollState(false);
-        
-        if (mainRb != null)
-        {
-            mainRb.linearVelocity = Vector2.zero;
-            mainRb.angularVelocity = 0f;
-        }
-        
-        if (_hitScript != null)
-        {
-            _hitScript.stand = true;
+            float timer = 0f;
+            while (timer < standUpDuration)
+            {
+                timer += Time.deltaTime;
+                float progress = timer / standUpDuration;
+                foreach (var data in _balanceDataList)
+                {
+                    data.script.force = Mathf.Lerp(0f, data.originalForce, progress);
+                }
+                yield return null;
+            }
+            
+            foreach (var data in _balanceDataList)
+            {
+                data.script.force = data.originalForce;
+            }
         }
 
         isRagdolling = false;
     }
-
-    public void SetRagdollState(bool state)
+    private void ToggleBalance(bool state, float overrideForce = -1f)
     {
-        if (mainRb != null) 
+        foreach (var data in _balanceDataList)
         {
-            mainRb.simulated = !state; 
-            if (!state) mainRb.linearVelocity = Vector2.zero; 
-        }
-
-        if (mainCollider != null) mainCollider.enabled = !state;
-
-        foreach (var rb in ragdollRigidbodies)
-        {
-            if (rb.gameObject != gameObject)
+            if (state)
             {
-                rb.bodyType = state ? RigidbodyType2D.Dynamic : RigidbodyType2D.Kinematic; 
-                if (!state)
-                {
-                    rb.linearVelocity = Vector2.zero;
-                    rb.angularVelocity = 0f;
-                }
+                if (overrideForce >= 0) data.script.force = overrideForce;
+                data.script.enabled = true;
             }
-        }
-
-        foreach (var col in ragdollColliders)
-        {
-            if (col.gameObject != gameObject) col.enabled = state;
+            else
+            {
+                data.script.enabled = false;
+            }
         }
     }
 }

@@ -2056,7 +2056,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4147517426303803130
 Transform:
   m_ObjectHideFlags: 0
@@ -3083,20 +3083,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bodyParts:
   - namePart: head
-    bone: {fileID: 734642256714657563}
+    bone: {fileID: 8772416596189903808}
     multiplier: 1.5
   - namePart: body
-    bone: {fileID: 1900971774077290493}
+    bone: {fileID: 176357375257913368}
     multiplier: 1
   - namePart: r_leg
-    bone: {fileID: 5634558493057946586}
+    bone: {fileID: 6962388404832660737}
     multiplier: 0.7
   - namePart: l_leg
-    bone: {fileID: 8272936084799681318}
+    bone: {fileID: 8244626954641637069}
     multiplier: 0.7
   hipsRigidbody: {fileID: 4376272031856117828}
   damageThresholdToRagdoll: 5
-  minKnockbackForce: 5
+  minKnockbackForce: 10
   stand: 0
   iscollision: 0
 --- !u!50 &248194070169160461
@@ -3184,7 +3184,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8805834243904569528}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98136fd9f2963c447afbe459e6b78a35, type: 3}
   m_Name: 

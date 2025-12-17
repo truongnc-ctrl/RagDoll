@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Bomb : MonoBehaviour
 {
@@ -34,34 +35,54 @@ public class Bomb : MonoBehaviour
 
         float maxDamage = weaponInfo._weapon.damage; 
         float maxKnockback = weaponInfo._weapon.knockbackForce;
-
         Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position, fieldOfImpact, layerMask);
+
+        HashSet<hit> damagedVictims = new HashSet<hit>();
 
         foreach (Collider2D obj in objects)
         {
             Vector2 directionVector = obj.transform.position - transform.position;
             float distance = directionVector.magnitude;
-            float proximity = Mathf.Clamp01(1 - (distance / fieldOfImpact));
+            float proximity = Mathf.Clamp01(1 - (distance / fieldOfImpact)); 
 
             float finalDamage = maxDamage * proximity;
             float finalForce = maxKnockback * proximity;
             Vector2 pushDirection = directionVector.normalized;
 
-            hit hitScript = obj.GetComponent<hit>();
-            if (hitScript != null)
+            BodyPartHit partHit = obj.GetComponent<BodyPartHit>();
+            
+            if (partHit != null && partHit.mainScript != null)
             {
-                hitScript.ReceiveImpact(finalDamage, finalForce, pushDirection);
+                float damageToApply = 0f;
+                
+                if (!damagedVictims.Contains(partHit.mainScript))
+                {
+                    damageToApply = finalDamage;
+                    damagedVictims.Add(partHit.mainScript);
+                }
+                partHit.mainScript.ReceiveImpact(damageToApply, finalForce, pushDirection, partHit.transform);
             }
             else
             {
-                IDamageable targetHealth = obj.GetComponent<IDamageable>();
-                if (targetHealth != null) targetHealth.TakeDamage(finalDamage);
-
-                Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
-                if (rb != null) rb.AddForce(pushDirection * finalForce, ForceMode2D.Impulse);
+                hit hitScript = obj.GetComponent<hit>();
+                if (hitScript != null)
+                {
+                    if (!damagedVictims.Contains(hitScript))
+                    {
+                        hitScript.ReceiveImpact(finalDamage, finalForce, pushDirection, obj.transform);
+                        damagedVictims.Add(hitScript);
+                    }
+                }
+                else
+                {
+                    IDamageable targetHealth = obj.GetComponent<IDamageable>();
+                    if (targetHealth != null) targetHealth.TakeDamage(finalDamage);
+                    Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
+                    if (rb != null) rb.AddForce(pushDirection * finalForce, ForceMode2D.Impulse);
+                }
             }
         }
-        
+
         Destroy(gameObject); 
     }
 
