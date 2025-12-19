@@ -119,10 +119,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fieldOfImpact: 7.01
-  waitTime: 3
+  waitTime: 2
   layerMask:
     serializedVersion: 2
-    m_Bits: 255
+    m_Bits: 2303
 --- !u!50 &8864936506224477949
 Rigidbody2D:
   serializedVersion: 5

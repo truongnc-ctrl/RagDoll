@@ -6,11 +6,11 @@ public class Bomb : MonoBehaviour
 {
     [Header("Explosion Settings")]
     [SerializeField] private float fieldOfImpact = 5f;
-    [SerializeField] private float waitTime = 2f;
+    [SerializeField] private float waitTime = 1f;
     public LayerMask layerMask;
 
     private WeaponInfo weaponInfo;
-    private bool hasExploded = false;
+    
     private bool hasStartedTimer = false;
 
     void Start()
@@ -30,8 +30,9 @@ public class Bomb : MonoBehaviour
 
     public void Explode()
     {
-        if (hasExploded || weaponInfo == null || weaponInfo._weapon == null) return;
-        hasExploded = true;
+
+        if (TurnManager.Instance.hasExploded || weaponInfo == null || weaponInfo._weapon == null) return;
+        TurnManager.Instance.hasExploded = true;
 
         float maxDamage = weaponInfo._weapon.damage; 
         float maxKnockback = weaponInfo._weapon.knockbackForce;

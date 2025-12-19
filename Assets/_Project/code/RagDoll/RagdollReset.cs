@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
+using System;
 public class RagdollReset : MonoBehaviour
 {
+    public event Action OnFallStart;      
+    public event Action OnStandUpComplete;
+
     [Header("Settings")]
     public float timeToReset = 2.0f;
-    public float standUpDuration = 1.0f; // Thời gian để gồng người đứng dậy từ từ (chống nhảy)
+    public float standUpDuration = 1.0f;
 
     private class BalanceData
     {
@@ -16,8 +19,10 @@ public class RagdollReset : MonoBehaviour
 
     private List<BalanceData> _balanceDataList = new List<BalanceData>();
     private Rigidbody2D[] _allRbs;
-    private bool isDead = false;
-    private bool isRagdolling = false;
+    private Health _healthScript; 
+    
+    public bool isDead  = false;
+    public bool isRagdolling = false;
 
     void Awake()
     {
@@ -25,43 +30,50 @@ public class RagdollReset : MonoBehaviour
         var balances = GetComponentsInChildren<Balance>();
         foreach (var b in balances)
         {
-            _balanceDataList.Add(new BalanceData 
-            { 
-                script = b, 
-                originalForce = b.force 
-            });
+            _balanceDataList.Add(new BalanceData { script = b, originalForce = b.force });
         }
+        _healthScript = GetComponent<Health>();
+    }
+
+    void OnEnable()
+    {
+        if (_healthScript != null) _healthScript.OnDeath += TriggerDeath;
+    }
+
+    void OnDisable()
+    {
+        if (_healthScript != null) _healthScript.OnDeath -= TriggerDeath;
     }
 
     public void TriggerFall()
     {
         if (isRagdolling || isDead) return;
+        OnFallStart?.Invoke(); 
         StartCoroutine(FallAndStandRoutine());
+        TurnManager.Instance.process();
     }
 
     public void TriggerDeath()
     {
         if (isDead) return;
         isDead = true;
+        StopAllCoroutines(); 
         ToggleBalance(false);
+        OnFallStart?.Invoke();
+        TurnManager.Instance.done();
     }
 
     IEnumerator FallAndStandRoutine()
     {
         isRagdolling = true;
-
-        // 1. NGÃ: Tắt Balance để rơi tự do
         ToggleBalance(false);
-
         yield return new WaitForSeconds(timeToReset);
 
         if (!isDead)
         {
-            // 2. CHUẨN BỊ ĐỨNG:
-            // Quan trọng: Triệt tiêu mọi vận tốc quán tính để nhân vật nằm im trước khi dậy
             foreach (var rb in _allRbs)
             {
-                rb.linearVelocity = Vector2.zero; // Unity 6 dùng linearVelocity
+                rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0f;
             }
             ToggleBalance(true, 0f);
@@ -82,10 +94,12 @@ public class RagdollReset : MonoBehaviour
             {
                 data.script.force = data.originalForce;
             }
+            OnStandUpComplete?.Invoke();
         }
-
         isRagdolling = false;
+        TurnManager.Instance.done();
     }
+
     private void ToggleBalance(bool state, float overrideForce = -1f)
     {
         foreach (var data in _balanceDataList)

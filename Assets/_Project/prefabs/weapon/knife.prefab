@@ -169,7 +169,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: -2
   m_Sprite: {fileID: 3310002292416464744, guid: de3a67af0e8796a46b3c15ce5cbaf0f8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -193,7 +193,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 10
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -220,6 +220,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0d245b9a9a778041b286da7e8c5f23a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stopVelocityThreshold: 0.1
+  maxLifeTime: 10
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4095
 --- !u!114 &7524074101362595782
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,8 +296,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba2f74b044f57474b9a716487d5bdd2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minDamageToStick: 10
-  Depth: 0.5
+  minDamageToStick: 15
   fixedStuckAngle: -72
   isStuck: 0
   isSpinning: 0
