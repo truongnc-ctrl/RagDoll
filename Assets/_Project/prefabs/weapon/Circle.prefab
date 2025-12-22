@@ -167,6 +167,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0d245b9a9a778041b286da7e8c5f23a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StopVelocityThreshold: 0.05
+  MaxLifeTime: 5
+  IsDestroyed: 1
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 4094
 --- !u!114 &7524074101362595782
 MonoBehaviour:
   m_ObjectHideFlags: 0

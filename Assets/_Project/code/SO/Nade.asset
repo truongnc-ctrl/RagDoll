@@ -15,5 +15,5 @@ MonoBehaviour:
   name_weapon: Nade
   damage: 50
   currentWeaponType: 2
-  knockbackForce: 10
+  knockbackForce: 15
   DamageCollisionNade: 2.1

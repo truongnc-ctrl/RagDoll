@@ -1,11 +1,14 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Line : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] ProjectileBehavior prefabAmmo; 
+    [SerializeField] List<ProjectileBehavior> projectilePrefabs = new List<ProjectileBehavior>(); 
     [SerializeField] Transform spawnPoint;
     [SerializeField] LineRenderer lineRenderer;
+
     
     [Header("Settings")]
     [SerializeField] float force = 5f; 
@@ -26,14 +29,14 @@ public class Line : MonoBehaviour
     private bool hasFired = false;
     public bool IsDead;
     private RagdollReset ragdollReset; 
-    private setting _setting;
+
+
 
     void Start()
     {
         if(lineRenderer != null) lineRenderer.positionCount = 0;
         isHolding = false;
         hasFired = false; 
-        _setting = FindFirstObjectByType<setting>();
         ragdollReset = GetComponentInParent<RagdollReset>();
         if (ragdollReset != null)
         {
@@ -50,6 +53,8 @@ public class Line : MonoBehaviour
         {
             TurnManager.Instance.SetPlayer(this);
         }
+
+
     }
 
     void OnDestroy()
@@ -100,7 +105,12 @@ public class Line : MonoBehaviour
     void Update()
     {
         if (TurnManager.Instance == null) return;
-        if (_setting != null && _setting.settingIsOpen == true) return;
+        if (Choose_weapon_Tab.Instance.Ischoose == true)
+        {
+            Choose_weapon_Tab.Instance.OpenWeaponTab();
+            return;
+        }
+        
        
         if (!TurnManager.Instance.IsPlayerTurn)
         {
@@ -168,10 +178,17 @@ public class Line : MonoBehaviour
         }
     }
 
-    void SpawnProjectile()
+void SpawnProjectile()
     {
         if (currentProjectile != null) return;
-        currentProjectile = Instantiate(prefabAmmo, spawnPoint.position, Quaternion.identity);
+        int weaponIndex = Choose_weapon.Instance.Index;
+        if (weaponIndex < 0 || weaponIndex >= projectilePrefabs.Count)
+        {
+            Debug.LogError($"Lỗi: Index vũ khí ({weaponIndex}) không hợp lệ! Hãy kiểm tra lại List Projectile Prefabs.");
+            weaponIndex = 0; 
+            if (projectilePrefabs.Count == 0) return; 
+        }
+        currentProjectile = Instantiate(projectilePrefabs[weaponIndex], spawnPoint.position, Quaternion.identity);
         currentProjectile.transform.SetParent(spawnPoint);
         currentProjectile.Prepare();
         currentProjectile.gameObject.SetActive(false); 

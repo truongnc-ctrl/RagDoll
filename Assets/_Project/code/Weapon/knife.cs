@@ -20,6 +20,7 @@ public class Knife : MonoBehaviour
     public Transform stabPoint;
     
     ProjectileRotation projectileRotation; 
+    ProjectileBehavior _projectileBehavior;
 
     void Start()
     {
@@ -27,6 +28,7 @@ public class Knife : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
         projectileRotation = GetComponent<ProjectileRotation>();
+        _projectileBehavior = GetComponent<ProjectileBehavior>();
     }
 
     void Update()

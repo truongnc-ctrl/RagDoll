@@ -48,6 +48,7 @@ public class TurnManager : MonoBehaviour
     public bool hasCollided = false;
 
 
+
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -125,8 +126,8 @@ public class TurnManager : MonoBehaviour
             if (currentState != GameState.win)
             {
                 currentState = GameState.lose;
-                lose.SetActive(true);
-                win.SetActive(false);
+                if (lose != null) lose.SetActive(true);
+                if (win != null) win.SetActive(false);
                 StopAllCoroutines();
             }
         }
@@ -135,8 +136,8 @@ public class TurnManager : MonoBehaviour
             if (currentState != GameState.lose)
             {
                 currentState = GameState.win;
-                lose.SetActive(false);
-                win.SetActive(true);
+                if (lose != null) lose.SetActive(false);
+                if (win != null) win.SetActive(true);
                 StopAllCoroutines();
             }
         }
@@ -146,6 +147,8 @@ public class TurnManager : MonoBehaviour
     {
         if (currentState == GameState.win || currentState == GameState.lose) return;
         Finish_turn = true;
+        hasCollided = false;
+        hasExploded = false;
 
         // Start at player turn
         isEnemyPhase = false;
@@ -213,13 +216,15 @@ public class TurnManager : MonoBehaviour
 
     IEnumerator HandlePlayerTurn()
     {
+        Choose_weapon_Tab.Instance.OpenWeaponTab();
         // While waiting for physics/animations to settle, do not stay in PlayerTurn
         currentState = GameState.Processing;
-        // Chờ cho đến khi projectile xong (Finish_turn == true) AND ragdoll animation xong (count == 0)
         while(Finish_turn == false || count > 0)
         {
             yield return null;
         }
+        Finish_turn = false;
+        hasCollided = false;
         hasExploded = false;
         currentState = GameState.PlayerTurn;
         Turn_text.text = "Player turn";
@@ -233,6 +238,8 @@ public class TurnManager : MonoBehaviour
         {
             yield return null;
         } 
+        Finish_turn = false;
+        hasCollided = false;
 
         // Ensure exactly 1 living enemy acts after the player.
         // If the chosen enemy dies before their turn (or during the pre-attack delay),
@@ -259,7 +266,6 @@ public class TurnManager : MonoBehaviour
                 enemy = next;
             }
 
-            // Pre-attack delay ("thinking")
             yield return new WaitForSeconds(2f);
 
             // Enemy might die while waiting; if so, loop and pick another.
@@ -363,9 +369,9 @@ public class TurnManager : MonoBehaviour
 
         return null;
     }
-    void Update()
-    {
-        Debug.Log("Finish_turn: " + Finish_turn + " | hasCollided: " + hasCollided + " | count: " + count);   
-    }
+    // void Update()
+    // {
+    //     Debug.Log("Finish_turn: " + Finish_turn + " | hasCollided: " + hasCollided + " | count: " + count);   
+    // }
 
 }
