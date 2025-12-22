@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: knife
   m_EditorClassIdentifier: 
   name_weapon: knife
-  damage: 20
+  damage: 50
   currentWeaponType: 1
   knockbackForce: 3
+  DamageCollisionNade: 0

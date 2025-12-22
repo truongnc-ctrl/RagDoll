@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 public class Bomb : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Bomb : MonoBehaviour
     private WeaponInfo weaponInfo;
     
     private bool hasStartedTimer = false;
+
 
     void Start()
     {
@@ -33,6 +35,7 @@ public class Bomb : MonoBehaviour
 
         if (TurnManager.Instance.hasExploded || weaponInfo == null || weaponInfo._weapon == null) return;
         TurnManager.Instance.hasExploded = true;
+        TurnManager.Instance.Finish_turn = true;
 
         float maxDamage = weaponInfo._weapon.damage; 
         float maxKnockback = weaponInfo._weapon.knockbackForce;
@@ -85,12 +88,16 @@ public class Bomb : MonoBehaviour
         }
 
         Destroy(gameObject); 
+   
+        
     }
 
     IEnumerator EnableNade()
     {
         yield return new WaitForSeconds(waitTime);
         Explode();
+        Debug.Log("bom nổ");
+        
     }
     
     void OnDrawGizmosSelected()

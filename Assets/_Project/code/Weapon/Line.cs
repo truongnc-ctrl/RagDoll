@@ -26,13 +26,14 @@ public class Line : MonoBehaviour
     private bool hasFired = false;
     public bool IsDead;
     private RagdollReset ragdollReset; 
+    private setting _setting;
 
     void Start()
     {
         if(lineRenderer != null) lineRenderer.positionCount = 0;
         isHolding = false;
         hasFired = false; 
-        
+        _setting = FindFirstObjectByType<setting>();
         ragdollReset = GetComponentInParent<RagdollReset>();
         if (ragdollReset != null)
         {
@@ -99,6 +100,8 @@ public class Line : MonoBehaviour
     void Update()
     {
         if (TurnManager.Instance == null) return;
+        if (_setting != null && _setting.settingIsOpen == true) return;
+       
         if (!TurnManager.Instance.IsPlayerTurn)
         {
             hasFired = false; 

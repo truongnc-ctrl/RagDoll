@@ -2,14 +2,16 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+
 public class RagdollReset : MonoBehaviour
 {
     public event Action OnFallStart;      
     public event Action OnStandUpComplete;
 
     [Header("Settings")]
-    public float timeToReset = 2.0f;
+    public float timeToReset = 1.0f;
     public float standUpDuration = 1.0f;
+    [SerializeField] float collapseForce = 5.0f; 
 
     private class BalanceData
     {
@@ -50,7 +52,7 @@ public class RagdollReset : MonoBehaviour
         if (isRagdolling || isDead) return;
         OnFallStart?.Invoke(); 
         StartCoroutine(FallAndStandRoutine());
-        TurnManager.Instance.process();
+        if(TurnManager.Instance != null) TurnManager.Instance.process();
     }
 
     public void TriggerDeath()
@@ -58,9 +60,19 @@ public class RagdollReset : MonoBehaviour
         if (isDead) return;
         isDead = true;
         StopAllCoroutines(); 
-        ToggleBalance(false);
+        ToggleBalance(false); 
+        ForceCollapse(); 
         OnFallStart?.Invoke();
-        TurnManager.Instance.done();
+        if(TurnManager.Instance != null) TurnManager.Instance.done();
+    }
+
+
+    private void ForceCollapse()
+    {
+        foreach (var rb in _allRbs)
+        {
+            rb.AddForce((Vector2.down*2) * collapseForce, ForceMode2D.Impulse);
+        }
     }
 
     IEnumerator FallAndStandRoutine()
@@ -97,7 +109,7 @@ public class RagdollReset : MonoBehaviour
             OnStandUpComplete?.Invoke();
         }
         isRagdolling = false;
-        TurnManager.Instance.done();
+        if(TurnManager.Instance != null) TurnManager.Instance.done();
     }
 
     private void ToggleBalance(bool state, float overrideForce = -1f)

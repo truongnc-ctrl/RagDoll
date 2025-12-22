@@ -8,8 +8,7 @@ public class Enemy_attack : MonoBehaviour
     [SerializeField] Transform spawnPoint;
     [SerializeField] LineRenderer lineRenderer;
 
-    [Header("AI Settings")]
-    [SerializeField] float inaccuracy = 1.0f; 
+    [Header("Enemy Settings")]
     public Transform playerTarget; 
     public float minPower = 2f;    
     public float maxPower = 30f; 
@@ -20,7 +19,7 @@ public class Enemy_attack : MonoBehaviour
     [SerializeField] int trajectoryStepCount = 15; 
     [SerializeField] float lineStep = 0.05f; 
     [SerializeField] float aim_timming = 1f;
-    [SerializeField] float thinking_time = 1.5f;
+    [SerializeField] float thinking_time = 0.5f;
 
     public bool isHoldingProjectile = false; 
     private bool isShooting = false;   
@@ -30,7 +29,7 @@ public class Enemy_attack : MonoBehaviour
     private ProjectileBehavior currentProjectile;
     private Health _healthScript;
     private RagdollReset ragdollReset;
-    private EnemyFacePlayer facingScript;
+
 
     void Start()
     {
@@ -38,8 +37,6 @@ public class Enemy_attack : MonoBehaviour
         
         _healthScript = GetComponentInParent<Health>();
         ragdollReset = GetComponentInParent<RagdollReset>();
-        facingScript = GetComponent<EnemyFacePlayer>();
-        if (facingScript == null) facingScript = GetComponentInParent<EnemyFacePlayer>();
 
         if (_healthScript != null) _healthScript.OnDeath += ForceDeath;
         if (TurnManager.Instance != null) TurnManager.Instance.RegisterEnemy(this);
@@ -124,7 +121,6 @@ public class Enemy_attack : MonoBehaviour
 
         SpawnProjectile(); 
         Vector2 throwVelocity = CalculateSimpleTrajectory();
-        if (facingScript != null) facingScript.FaceDirection(throwVelocity.x);
         DrawTrajectory(throwVelocity);
         
         yield return new WaitForSeconds(aim_timming);
@@ -203,11 +199,7 @@ public class Enemy_attack : MonoBehaviour
     void HandleStandUp()
     {
         ragdollReset.isRagdolling = false;
-        if (playerTarget != null && facingScript != null)
-        {
-            float dirX = playerTarget.position.x - transform.position.x;
-            facingScript.FaceDirection(dirX);
-        }
+
     }
 
 
@@ -226,8 +218,6 @@ public class Enemy_attack : MonoBehaviour
         if (playerTarget == null) return Vector2.up * minPower;
         Vector3 startPos = spawnPoint.position;
         Vector3 targetPos = playerTarget.position;
-        float offset = Random.Range(-inaccuracy, inaccuracy);
-        targetPos.x += offset;
         Vector2 direction = targetPos - startPos;
         float distance = direction.magnitude;
         direction.y += distance * 1f; 
@@ -266,4 +256,5 @@ public class Enemy_attack : MonoBehaviour
     }
     
     private void ClearLine() { if (lineRenderer != null) lineRenderer.positionCount = 0; }
+
 }

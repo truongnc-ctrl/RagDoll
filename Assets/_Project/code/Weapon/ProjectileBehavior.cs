@@ -61,17 +61,18 @@ public class ProjectileBehavior : MonoBehaviour
     void Update()
     {
         if (TurnManager.Instance.Finish_turn == true) return;
-        if (!TurnManager.Instance.hasExploded && TurnManager.Instance.hasCollided)
+        if (TurnManager.Instance.hasCollided == true)
         {
             float sqrThreshold = stopVelocityThreshold * stopVelocityThreshold;
             if (rb.linearVelocity.sqrMagnitude <= sqrThreshold) 
             {
-                    TurnManager.Instance.Finish_turn = true; 
+                    TurnManager.Instance.Finish_turn =true; 
                     rb.linearVelocity = Vector2.zero;
                     rb.angularVelocity = 0f;
                     rotator.isSpinning = false;
                 
             }
-    }
+        }
+
     }
 }
