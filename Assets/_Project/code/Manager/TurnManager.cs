@@ -42,10 +42,12 @@ public class TurnManager : MonoBehaviour
     private bool currentEnemyRemovedThisTurn = false;
     private bool isEnemyPhase = false;
 
-    private int count=0;
+
     public bool hasExploded = false;
     public bool Finish_turn = true;
     public bool hasCollided = false;
+    // public bool isDead  = false;
+    public bool isRagdolling = false;
 
 
 
@@ -55,10 +57,12 @@ public class TurnManager : MonoBehaviour
         else Destroy(gameObject);
         lose.SetActive(false);
         win.SetActive(false);
+        Application.targetFrameRate = 60;
     }
 
     void Start()
     {
+        Application.targetFrameRate = 60;
         StartCoroutine(StartGameRoutine());
     }
 
@@ -76,7 +80,7 @@ public class TurnManager : MonoBehaviour
 
     public void RegisterEnemy(Enemy_attack enemy)
     {
-        if (!livingEnemies.Contains(enemy) && enemy.IsDead == false) livingEnemies.Add(enemy);
+        if (!livingEnemies.Contains(enemy) ) livingEnemies.Add(enemy);
         Debug.Log(enemy + "add");
     }
 
@@ -180,7 +184,15 @@ public class TurnManager : MonoBehaviour
 
     public void ProcessNextTurn()
     {
-        EndTurn();
+        if(Finish_turn == true && isRagdolling == false)
+        {
+            EndTurn();
+        }
+        else
+        {
+            return;
+        }
+        
     }
 
     private void CleanupDeadEnemies()
@@ -191,6 +203,9 @@ public class TurnManager : MonoBehaviour
     public void EndTurn()
     {
         if (currentState == GameState.win || currentState == GameState.lose) return;
+        hasCollided = false;
+        hasExploded = false;
+        Finish_turn = false;
 
         if (isEnemyPhase)
         {
@@ -203,43 +218,32 @@ public class TurnManager : MonoBehaviour
 
     }
 
-    public void process()
-    {
-        count++;
-    }
-    public void done()
-    {
-        count--;
-        if(count <0 ) count =0 ;
-    }
 
 
     IEnumerator HandlePlayerTurn()
     {
-        Choose_weapon_Tab.Instance.OpenWeaponTab();
+        if (currentState == GameState.win || currentState == GameState.lose) yield break;
+        
         // While waiting for physics/animations to settle, do not stay in PlayerTurn
         currentState = GameState.Processing;
-        while(Finish_turn == false || count > 0)
-        {
-            yield return null;
-        }
+
         Finish_turn = false;
         hasCollided = false;
-        hasExploded = false;
+
         currentState = GameState.PlayerTurn;
         Turn_text.text = "Player turn";
+        Choose_weapon_Tab.Instance.OpenWeaponTab();
     }
 
     IEnumerator HandleEnemyTurn(Enemy_attack enemy)
     {
         // Immediately leave PlayerTurn so the player can't act twice
         currentState = GameState.Processing;
-        while(Finish_turn == false || count > 0)
-        {
-            yield return null;
-        } 
+
         Finish_turn = false;
         hasCollided = false;
+        currentState = GameState.EnemyTurn;
+
 
         // Ensure exactly 1 living enemy acts after the player.
         // If the chosen enemy dies before their turn (or during the pre-attack delay),
@@ -273,11 +277,8 @@ public class TurnManager : MonoBehaviour
 
             currentEnemy = enemy;
             currentEnemyRemovedThisTurn = false;
-
             currentState = GameState.EnemyTurn;
             Turn_text.text = "Enemy turn";
-            hasExploded = false;
-
             enemy.StartAttack();
             yield break;
         }
@@ -332,6 +333,8 @@ public class TurnManager : MonoBehaviour
         isEnemyPhase = true;
         currentEnemy = null;
         currentEnemyRemovedThisTurn = false;
+        hasCollided = false;
+        Finish_turn = false;
 
         // Immediately leave PlayerTurn so Line can reset hasFired
         currentState = GameState.Processing;
@@ -369,9 +372,6 @@ public class TurnManager : MonoBehaviour
 
         return null;
     }
-    // void Update()
-    // {
-    //     Debug.Log("Finish_turn: " + Finish_turn + " | hasCollided: " + hasCollided + " | count: " + count);   
-    // }
+
 
 }

@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e646136f614dece4aa640eaa48cc3bd8, type: 3}
   m_Name: knife
   m_EditorClassIdentifier: 
-  name_weapon: knife
+  name_weapon: Knife
+  icon: {fileID: 3310002292416464744, guid: de3a67af0e8796a46b3c15ce5cbaf0f8, type: 3}
   damage: 50
   currentWeaponType: 1
   knockbackForce: 3
   DamageCollisionNade: 0
+  prefabWeapon: {fileID: 4194196158553464265, guid: 90d192a199615644c9652be21ee3a3fb, type: 3}

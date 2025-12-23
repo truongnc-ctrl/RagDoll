@@ -4,7 +4,7 @@ using System.Collections;
 public class Enemy_attack : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] ProjectileBehavior prefabAmmo; 
+
     [SerializeField] Transform spawnPoint;
     [SerializeField] LineRenderer lineRenderer;
 
@@ -90,6 +90,7 @@ public class Enemy_attack : MonoBehaviour
             }
         }
         Debug.Log(name + " died ");
+        TurnManager.Instance.isRagdolling = false;
     }
 
     public void StartAttack()
@@ -102,7 +103,7 @@ public class Enemy_attack : MonoBehaviour
             return;
         }
 
-        if (ragdollReset.isRagdolling) StartCoroutine(WaitAndAttackRoutine());
+        if (TurnManager.Instance.isRagdolling) StartCoroutine(WaitAndAttackRoutine());
         else StartCoroutine(PerformAttackRoutine());
     }
     
@@ -112,7 +113,7 @@ public class Enemy_attack : MonoBehaviour
     {
         isShooting = true;
         yield return new WaitForSeconds(thinking_time);
-        if (IsDead || ragdollReset.isRagdolling) 
+        if (IsDead || TurnManager.Instance.isRagdolling) 
         {
             CleanupAttack();
             if (IsDead && TurnManager.Instance != null) TurnManager.Instance.ProcessNextEnemy();
@@ -125,7 +126,7 @@ public class Enemy_attack : MonoBehaviour
         
         yield return new WaitForSeconds(aim_timming);
         
-        if (IsDead || ragdollReset.isRagdolling) 
+        if (IsDead || TurnManager.Instance.isRagdolling) 
         {
             CleanupAttack();
             if (IsDead && TurnManager.Instance != null) TurnManager.Instance.ProcessNextEnemy();
@@ -136,10 +137,22 @@ public class Enemy_attack : MonoBehaviour
         ClearLine();
         hasAttackedThisTurn = true; 
 
+        while (!TurnManager.Instance.Finish_turn && !IsDead && !TurnManager.Instance.isRagdolling)
+        {
+            yield return null;
+        }
+        
         yield return new WaitForSeconds(thinking_time); 
         
+        // Đợi player không ragdoll nữa (nếu bomb hit player) rồi mới next turn
+        while (TurnManager.Instance.isRagdolling && !IsDead)
+        {
+            yield return null;
+        }
+        
         isShooting = false;
-        if (!ragdollReset.isRagdolling && !IsDead && TurnManager.Instance != null)
+        // Luôn gọi ProcessNextEnemy() để kết thúc enemy turn dù lý do gì
+        if (!IsDead && TurnManager.Instance != null)
         {
             TurnManager.Instance.ProcessNextEnemy();
         }
@@ -148,7 +161,7 @@ public class Enemy_attack : MonoBehaviour
     IEnumerator WaitAndAttackRoutine()
     {
 
-        while (ragdollReset.isRagdolling) yield return null; 
+        while (TurnManager.Instance.isRagdolling) yield return null; 
         
         if (!IsDead) StartCoroutine(PerformAttackRoutine());
         else if (TurnManager.Instance != null) TurnManager.Instance.ProcessNextEnemy();
@@ -156,21 +169,21 @@ public class Enemy_attack : MonoBehaviour
 
     IEnumerator WaitAndSkipRoutine()
     {
-        while (ragdollReset.isRagdolling) yield return null;
+        while (TurnManager.Instance.isRagdolling) yield return null;
         if (TurnManager.Instance != null) TurnManager.Instance.ProcessNextEnemy();
     }
 
 
     void HandleFall()
     {
-        ragdollReset.isRagdolling = true;
+        TurnManager.Instance.isRagdolling = true;
         
-        if (IsDead || ragdollReset.isDead) 
-        {
-            StopAllCoroutines();
-            CleanupAttack();
-            return;
-        }
+        // if (IsDead || ragdollReset.isDead) 
+        // {
+        //     StopAllCoroutines();
+        //     CleanupAttack();
+        //     return;
+        // }
 
         if (TurnManager.Instance != null && TurnManager.Instance.currentState == GameState.EnemyTurn)
         {
@@ -198,7 +211,7 @@ public class Enemy_attack : MonoBehaviour
 
     void HandleStandUp()
     {
-        ragdollReset.isRagdolling = false;
+        TurnManager.Instance.isRagdolling = false;
 
     }
 
@@ -225,19 +238,44 @@ public class Enemy_attack : MonoBehaviour
         return direction.normalized * power;
     }
 
-    void SpawnProjectile()
+void SpawnProjectile()
     {
-        if (currentProjectile != null) Destroy(currentProjectile.gameObject);
-        currentProjectile = Instantiate(prefabAmmo, spawnPoint.position, Quaternion.identity);
-        currentProjectile.transform.SetParent(spawnPoint);
-        currentProjectile.Prepare();
+        if (Choose_weapon.Instance == null) return;
+        TurnManager.Instance.hasCollided = false;
         isHoldingProjectile = true;
+        Weapon weaponData = Choose_weapon.Instance.GetRandomWeapon();
+
+        if (weaponData != null && weaponData.prefabWeapon != null)
+        {
+
+            GameObject newObj = Instantiate(weaponData.prefabWeapon, spawnPoint.position, Quaternion.identity);
+            newObj.transform.SetParent(spawnPoint);
+            currentProjectile = newObj.GetComponent<ProjectileBehavior>();
+
+            if (currentProjectile != null)
+            {
+                currentProjectile.Prepare();
+                currentProjectile.gameObject.SetActive(false);
+                Debug.Log("Spawned weapon: " + weaponData.name_weapon);
+            }
+            else
+            {
+                Debug.LogError("Prefab trong Weapon SO thiếu script ProjectileBehavior!");
+                Destroy(newObj);
+            }
+        }
+        else
+        {
+            Debug.LogError("Weapon Data null hoặc chưa gán Prefab trong SO!");
+        }
     }
 
     void ReleaseProjectile(Vector2 velocity)
     {
         isHoldingProjectile = false;
         if (currentProjectile == null) return;
+        currentProjectile.gameObject.SetActive(true);
+        currentProjectile.transform.SetParent(null); 
         currentProjectile.Throw(velocity, colliderDelay);
         currentProjectile = null;
     }

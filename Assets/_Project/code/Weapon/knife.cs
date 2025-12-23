@@ -36,6 +36,7 @@ public class Knife : MonoBehaviour
         if (isStuck && projectileRotation != null)
         {
             projectileRotation.SetRotation(false);
+            _projectileBehavior.IsDestroyed = true;
         }
     }
 

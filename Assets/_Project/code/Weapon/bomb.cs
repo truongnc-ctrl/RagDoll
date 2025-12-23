@@ -12,10 +12,7 @@ public class Bomb : MonoBehaviour
 
     private WeaponInfo weaponInfo;
     
-    private bool hasStartedTimer = false;
-
-
-    void Start()
+    private bool hasStartedTimer = false;    void Start()
     {
         weaponInfo = GetComponent<WeaponInfo>();
         if (weaponInfo == null) Debug.LogError("Missing WeaponInfo on Bomb");
@@ -32,7 +29,6 @@ public class Bomb : MonoBehaviour
 
     public void Explode()
     {
-
         if (TurnManager.Instance.hasExploded || weaponInfo == null || weaponInfo._weapon == null) return;
         TurnManager.Instance.hasExploded = true;
         TurnManager.Instance.Finish_turn = true;
@@ -87,9 +83,9 @@ public class Bomb : MonoBehaviour
             }
         }
 
-        Destroy(gameObject); 
-   
-        
+        // Reset hasExploded trước destroy để bom lần sau có thể nổ
+        TurnManager.Instance.hasExploded = false;
+        Destroy(gameObject);
     }
 
     IEnumerator EnableNade()
@@ -97,7 +93,6 @@ public class Bomb : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         Explode();
         Debug.Log("bom nổ");
-        
     }
     
     void OnDrawGizmosSelected()

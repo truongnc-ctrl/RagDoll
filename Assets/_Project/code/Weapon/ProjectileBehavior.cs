@@ -5,9 +5,10 @@ using System;
 public class ProjectileBehavior : MonoBehaviour
 {
     [Header("Physics Settings")]
-    public float StopVelocityThreshold = 0f;
+    public float StopVelocityThreshold = 3f;
     public float MaxLifeTime = 5f;
     public bool IsDestroyed = true;
+
 
 
 
@@ -18,12 +19,14 @@ public class ProjectileBehavior : MonoBehaviour
     public LayerMask layerMask;
     private float CollisionTimer = 0f;
     private bool StartedDestroyRoutine = false;
+    private WeaponInfo _weaponInfo;
 
     void Awake()
     {
         rotator = GetComponent<ProjectileRotation>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
+        _weaponInfo = GetComponent<WeaponInfo>();
         if(GetComponent<Knife>() != null) knife = GetComponent<Knife>();
     }
 
@@ -66,6 +69,7 @@ public class ProjectileBehavior : MonoBehaviour
             {
                 StartedDestroyRoutine = true;
                 StartCoroutine(DestroyAfterTimeRoutine());
+                
             }
 
         }
@@ -77,30 +81,32 @@ public class ProjectileBehavior : MonoBehaviour
         {
             if (knife != null && knife.isStuck)
             {
+                TurnManager.Instance.Finish_turn = true;
                 yield break;
             }
             yield return null;
             CollisionTimer += Time.deltaTime;
         }
         Destroy(gameObject);
+        TurnManager.Instance.Finish_turn = true;
+        TurnManager.Instance.hasCollided = false;
     }
     void Update()
     {
+        Debug.Log("Finish turn : "+TurnManager.Instance.Finish_turn +"ragdol_fall : "+ TurnManager.Instance.isRagdolling + " hasCollided : "+ TurnManager.Instance.hasCollided );
         if (TurnManager.Instance.Finish_turn == true) return;
         if (TurnManager.Instance.hasCollided == true)
         {
-            float sqrThreshold = StopVelocityThreshold * StopVelocityThreshold;
-            if (rb.linearVelocity.sqrMagnitude <= sqrThreshold) 
+            if (rb.linearVelocity.sqrMagnitude <= StopVelocityThreshold && !_weaponInfo._weapon.currentWeaponType.Equals(TypeWeapon.nade)) 
             {
                 TurnManager.Instance.Finish_turn =true; 
                 rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0f;
                 rotator.isSpinning = false;
-                Debug.Log("đã dừng");
-                
-            }
-            Debug.Log("đã va chạm");
-        }
+                Debug.Log("đã dừng ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+                Debug.Log(CollisionTimer);
 
+            }
+        }
     }
 }

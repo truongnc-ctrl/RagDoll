@@ -5,56 +5,48 @@ using UnityEngine;
 public class Line : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] List<ProjectileBehavior> projectilePrefabs = new List<ProjectileBehavior>(); 
     [SerializeField] Transform spawnPoint;
     [SerializeField] LineRenderer lineRenderer;
 
-    
     [Header("Settings")]
-    [SerializeField] float force = 5f; 
+    [SerializeField] float force = 5f;
     public float maxPower = 15f;
     [SerializeField] float minDragDistance = 0.5f;
-    
+
     [Header("Trajectory Settings")]
-    [SerializeField] int trajectoryStepCount = 15; 
-    [SerializeField] float lineStep = 0.05f; 
+    [SerializeField] int trajectoryStepCount = 15;
+    [SerializeField] float lineStep = 0.05f;
 
     [Header("Throw Settings")]
-    [SerializeField] float colliderDelay = 0.2f; 
+    [SerializeField] float colliderDelay = 0.2f;
     public bool isHolding;
 
     private Vector2 startMousePos, currentMousePos, velocity;
-    private ProjectileBehavior currentProjectile;
+    
+    private ProjectileBehavior currentProjectile; 
+
     private Health health;
     private bool hasFired = false;
     public bool IsDead;
-    private RagdollReset ragdollReset; 
-
-
+    private RagdollReset ragdollReset;
+    public int Index_number;
 
     void Start()
     {
-        if(lineRenderer != null) lineRenderer.positionCount = 0;
+        if (lineRenderer != null) lineRenderer.positionCount = 0;
         isHolding = false;
-        hasFired = false; 
+        hasFired = false;
         ragdollReset = GetComponentInParent<RagdollReset>();
         if (ragdollReset != null)
         {
-            ragdollReset.OnFallStart += HandleFall;        
-            ragdollReset.OnStandUpComplete += HandleStandUp; 
+            ragdollReset.OnFallStart += HandleFall;
+            ragdollReset.OnStandUpComplete += HandleStandUp;
         }
-        
+
         health = GetComponentInParent<Health>();
-        if (health != null)
-        {
-            health.OnDeath += OnDeathHandler;
-        }
-        if (TurnManager.Instance != null)
-        {
-            TurnManager.Instance.SetPlayer(this);
-        }
-
-
+        if (health != null) health.OnDeath += OnDeathHandler;
+        
+        if (TurnManager.Instance != null) TurnManager.Instance.SetPlayer(this);
     }
 
     void OnDestroy()
@@ -64,38 +56,29 @@ public class Line : MonoBehaviour
             ragdollReset.OnFallStart -= HandleFall;
             ragdollReset.OnStandUpComplete -= HandleStandUp;
         }
-
-        if (health != null)
-        {
-            health.OnDeath -= OnDeathHandler;
-        }
+        if (health != null) health.OnDeath -= OnDeathHandler;
     }
 
     void HandleFall()
     {
-        ragdollReset.isRagdolling = true;
+        TurnManager.Instance.isRagdolling = true;
         CancelShot();
-         if (TurnManager.Instance != null) TurnManager.Instance.process();
+
     }
 
     void HandleStandUp()
     {
-        ragdollReset.isRagdolling = false;
-        if (TurnManager.Instance != null) TurnManager.Instance.done();
+        TurnManager.Instance.isRagdolling = false;
+
     }
 
     void OnDeathHandler()
     {
-        if (TurnManager.Instance != null) TurnManager.Instance.done();
-        ragdollReset.isDead = true;
+
+        // TurnManager.Instance.isDead = true;
         isHolding = false;
-        IsDead=true;
-        ClearLine();
-        
-        if (currentProjectile != null)
-        {
-            Destroy(currentProjectile.gameObject);
-        }
+        IsDead = true;
+        CancelShot();        
         if (TurnManager.Instance != null && TurnManager.Instance.IsPlayerTurn)
         {
             TurnManager.Instance.EndTurn();
@@ -105,20 +88,21 @@ public class Line : MonoBehaviour
     void Update()
     {
         if (TurnManager.Instance == null) return;
-        if (Choose_weapon_Tab.Instance.Ischoose == true)
+        
+        if (Choose_weapon_Tab.Instance != null && Choose_weapon_Tab.Instance.Ischoose)
         {
             Choose_weapon_Tab.Instance.OpenWeaponTab();
             return;
         }
         
-       
         if (!TurnManager.Instance.IsPlayerTurn)
         {
-            hasFired = false; 
-            if (isHolding) CancelShot(); 
+            hasFired = false;
+            if (isHolding) CancelShot();
             return;
         }
-        if (!ragdollReset.isDead && !hasFired && !ragdollReset.isRagdolling)
+
+        if ( !hasFired && !TurnManager.Instance.isRagdolling)
         {
             HandleInput();
         }
@@ -126,17 +110,21 @@ public class Line : MonoBehaviour
 
     void HandleInput()
     {
+
         if (Input.GetMouseButtonDown(0))
         {
-            if (currentProjectile == null) 
+            if (currentProjectile == null)
             {
                 startMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                SpawnProjectile();
-                isHolding = true;
-                ClearLine(); 
+                SpawnProjectile();           
+                if (currentProjectile != null)
+                {
+                    isHolding = true;
+                    ClearLine();
+                }
             }
         }
-        
+
         if (isHolding && currentProjectile != null)
         {
             currentMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -147,25 +135,24 @@ public class Line : MonoBehaviour
                 velocity = (currentMousePos - startMousePos) * force;
                 velocity = Vector2.ClampMagnitude(velocity, maxPower);
                 
-                DrawTrajectory(); 
+                DrawTrajectory();
                 RotateLauncher();
             }
             else
             {
-                ClearLine(); 
+                ClearLine();
                 velocity = Vector2.zero;
             }
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            if (isHolding) 
+            if (isHolding)
             {
-                if (lineRenderer.positionCount > 0)
+                if (lineRenderer.positionCount > 0 && currentProjectile != null)
                 {
                     ReleaseProjectile();
                     ClearLine();
-                    
                     hasFired = true;
                     TurnManager.Instance.EndTurn();
                 }
@@ -178,26 +165,46 @@ public class Line : MonoBehaviour
         }
     }
 
-void SpawnProjectile()
+
+    void SpawnProjectile()
     {
-        if (currentProjectile != null) return;
-        int weaponIndex = Choose_weapon.Instance.Index;
-        if (weaponIndex < 0 || weaponIndex >= projectilePrefabs.Count)
+        if (Choose_weapon.Instance == null) return;
+        TurnManager.Instance.hasCollided = false;
+
+
+        Weapon weaponData = Choose_weapon.Instance.GetCurrentWeaponData();
+
+        if (weaponData != null && weaponData.prefabWeapon != null)
         {
-            Debug.LogError($"Lỗi: Index vũ khí ({weaponIndex}) không hợp lệ! Hãy kiểm tra lại List Projectile Prefabs.");
-            weaponIndex = 0; 
-            if (projectilePrefabs.Count == 0) return; 
+
+            GameObject newObj = Instantiate(weaponData.prefabWeapon, spawnPoint.position, Quaternion.identity);
+            newObj.transform.SetParent(spawnPoint);
+            currentProjectile = newObj.GetComponent<ProjectileBehavior>();
+
+            if (currentProjectile != null)
+            {
+                currentProjectile.Prepare();
+                currentProjectile.gameObject.SetActive(false);
+                Debug.Log("Spawned weapon: " + weaponData.name_weapon);
+            }
+            else
+            {
+                Debug.LogError("Prefab trong Weapon SO thiếu script ProjectileBehavior!");
+                Destroy(newObj);
+            }
         }
-        currentProjectile = Instantiate(projectilePrefabs[weaponIndex], spawnPoint.position, Quaternion.identity);
-        currentProjectile.transform.SetParent(spawnPoint);
-        currentProjectile.Prepare();
-        currentProjectile.gameObject.SetActive(false); 
+        else
+        {
+            Debug.LogError("Weapon Data null hoặc chưa gán Prefab trong SO!");
+        }
     }
 
     void ReleaseProjectile()
     {
         if (currentProjectile == null) return;
+
         currentProjectile.gameObject.SetActive(true);
+        currentProjectile.transform.SetParent(null); 
         currentProjectile.Throw(velocity, colliderDelay);
         currentProjectile = null;
     }
@@ -216,10 +223,11 @@ void SpawnProjectile()
     private void DrawTrajectory()
     {
         if(currentProjectile != null) currentProjectile.gameObject.SetActive(true);
+        
         Vector3[] positions = new Vector3[trajectoryStepCount];
         for (int i = 0; i < trajectoryStepCount; i++)
         {
-            float t = i * lineStep; 
+            float t = i * lineStep;
             Vector3 pos = (Vector2)spawnPoint.position + velocity * t + 0.5f * Physics2D.gravity * t * t;
             positions[i] = pos;
         }
@@ -229,8 +237,11 @@ void SpawnProjectile()
 
     private void RotateLauncher()
     {
-        float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        if (velocity != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
     }
 
     private void ClearLine()

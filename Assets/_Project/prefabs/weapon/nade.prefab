@@ -119,10 +119,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fieldOfImpact: 7.01
-  waitTime: 2
+  waitTime: 1
   layerMask:
     serializedVersion: 2
-    m_Bits: 2303
+    m_Bits: 4095
 --- !u!50 &8864936506224477949
 Rigidbody2D:
   serializedVersion: 5
@@ -162,11 +162,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0d245b9a9a778041b286da7e8c5f23a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stopVelocityThreshold: 0.05
-  maxLifeTime: 6
+  StopVelocityThreshold: 0.05
+  MaxLifeTime: 5
+  IsDestroyed: 1
   layerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4095
 --- !u!114 &-5064315720449959698
 MonoBehaviour:
   m_ObjectHideFlags: 0

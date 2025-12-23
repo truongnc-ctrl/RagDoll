@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class IgnoreCollider : MonoBehaviour
 {
+    public LayerMask layerMask;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,7 +20,7 @@ public class IgnoreCollider : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D coll)
     {
-        if (coll.gameObject.tag == "Player")
+        if((layerMask.value & (1 << coll.gameObject.layer)) > 0)
         {
             Physics2D.IgnoreCollision(this.gameObject.GetComponent<Collider2D>(), coll.gameObject.GetComponent<Collider2D>());
         }

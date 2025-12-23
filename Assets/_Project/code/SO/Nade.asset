@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Nade
   m_EditorClassIdentifier: 
   name_weapon: Nade
+  icon: {fileID: -6619111317931664985, guid: 93baaf8b99b550043af58940e1a859a9, type: 3}
   damage: 50
   currentWeaponType: 2
-  knockbackForce: 15
+  knockbackForce: 30
   DamageCollisionNade: 2.1
+  prefabWeapon: {fileID: 2250909442432882078, guid: 7b3c43b33313e3a4ca39cd32a8078d9e, type: 3}
