@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,6 +32,8 @@ public class Line : MonoBehaviour
     private RagdollReset ragdollReset;
     public int Index_number;
 
+    private Coroutine waitForProjectileRoutine;
+
     void Start()
     {
         if (lineRenderer != null) lineRenderer.positionCount = 0;
@@ -39,7 +42,6 @@ public class Line : MonoBehaviour
         ragdollReset = GetComponentInParent<RagdollReset>();
         if (ragdollReset != null)
         {
-            ragdollReset.OnFallStart += HandleFall;
             ragdollReset.OnStandUpComplete += HandleStandUp;
         }
 
@@ -53,7 +55,7 @@ public class Line : MonoBehaviour
     {
         if (ragdollReset != null)
         {
-            ragdollReset.OnFallStart -= HandleFall;
+
             ragdollReset.OnStandUpComplete -= HandleStandUp;
         }
         if (health != null) health.OnDeath -= OnDeathHandler;
@@ -61,21 +63,16 @@ public class Line : MonoBehaviour
 
     void HandleFall()
     {
-        TurnManager.Instance.isRagdolling = true;
         CancelShot();
 
     }
 
     void HandleStandUp()
     {
-        TurnManager.Instance.isRagdolling = false;
-
     }
 
     void OnDeathHandler()
     {
-
-        // TurnManager.Instance.isDead = true;
         isHolding = false;
         IsDead = true;
         CancelShot();        
@@ -132,7 +129,7 @@ public class Line : MonoBehaviour
 
             if (dragDistance >= minDragDistance)
             {
-                velocity = (currentMousePos - startMousePos) * force;
+                velocity = (startMousePos - currentMousePos) * force;
                 velocity = Vector2.ClampMagnitude(velocity, maxPower);
                 
                 DrawTrajectory();
@@ -154,7 +151,8 @@ public class Line : MonoBehaviour
                     ReleaseProjectile();
                     ClearLine();
                     hasFired = true;
-                    TurnManager.Instance.EndTurn();
+                    if (waitForProjectileRoutine != null) StopCoroutine(waitForProjectileRoutine);
+                    waitForProjectileRoutine = StartCoroutine(WaitForFinishThenEndTurn());
                 }
                 else
                 {
@@ -162,6 +160,28 @@ public class Line : MonoBehaviour
                 }
                 isHolding = false;
             }
+        }
+    }
+
+    private IEnumerator WaitForFinishThenEndTurn()
+    {
+        if (TurnManager.Instance == null) yield break;
+
+        TurnManager.Instance.currentState = GameState.Processing;
+
+        while (TurnManager.Instance != null
+               && TurnManager.Instance.currentState != GameState.win
+               && TurnManager.Instance.currentState != GameState.lose
+               && (!TurnManager.Instance.Finish_turn || TurnManager.Instance.isRagdolling))
+        {
+            yield return null;
+        }
+
+        if (TurnManager.Instance != null
+            && TurnManager.Instance.currentState != GameState.win
+            && TurnManager.Instance.currentState != GameState.lose)
+        {
+            TurnManager.Instance.EndTurn();
         }
     }
 

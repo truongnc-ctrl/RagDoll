@@ -43,7 +43,6 @@ public class Enemy_attack : MonoBehaviour
         
         if (ragdollReset != null)
         {
-            ragdollReset.OnFallStart += HandleFall;
             ragdollReset.OnStandUpComplete += HandleStandUp;
         }
 
@@ -66,7 +65,6 @@ public class Enemy_attack : MonoBehaviour
         if (TurnManager.Instance != null) TurnManager.Instance.UnregisterEnemy(this);
         if (ragdollReset != null)
         {
-            ragdollReset.OnFallStart -= HandleFall;
             ragdollReset.OnStandUpComplete -= HandleStandUp;
         }
     }
@@ -77,7 +75,6 @@ public class Enemy_attack : MonoBehaviour
         
         IsDead = true; 
         if(ragdollReset != null) ragdollReset.isDead = true; 
-        
         StopAllCoroutines();
         CleanupAttack();
 
@@ -86,11 +83,20 @@ public class Enemy_attack : MonoBehaviour
             TurnManager.Instance.UnregisterEnemy(this);
             if (TurnManager.Instance.currentState == GameState.EnemyTurn)
             {
-                TurnManager.Instance.ProcessNextEnemy(); 
+                if (!TurnManager.Instance.Finish_turn || TurnManager.Instance.isRagdolling)
+                {
+                    TurnManager.Instance.RequestProcessNextEnemyAfterResolution();
+                }
+                else
+                {
+                    TurnManager.Instance.ProcessNextEnemy();
+                }
             }
         }
         Debug.Log(name + " died ");
-        TurnManager.Instance.isRagdolling = false;
+
+
+
     }
 
     public void StartAttack()
@@ -137,21 +143,19 @@ public class Enemy_attack : MonoBehaviour
         ClearLine();
         hasAttackedThisTurn = true; 
 
-        while (!TurnManager.Instance.Finish_turn && !IsDead && !TurnManager.Instance.isRagdolling)
+        while (!TurnManager.Instance.Finish_turn && !IsDead)
         {
             yield return null;
         }
         
         yield return new WaitForSeconds(thinking_time); 
         
-        // Đợi player không ragdoll nữa (nếu bomb hit player) rồi mới next turn
         while (TurnManager.Instance.isRagdolling && !IsDead)
         {
             yield return null;
         }
         
         isShooting = false;
-        // Luôn gọi ProcessNextEnemy() để kết thúc enemy turn dù lý do gì
         if (!IsDead && TurnManager.Instance != null)
         {
             TurnManager.Instance.ProcessNextEnemy();
@@ -169,22 +173,19 @@ public class Enemy_attack : MonoBehaviour
 
     IEnumerator WaitAndSkipRoutine()
     {
-        while (TurnManager.Instance.isRagdolling) yield return null;
+        while (TurnManager.Instance != null
+               && (TurnManager.Instance.isRagdolling || !TurnManager.Instance.Finish_turn)
+               && !IsDead)
+        {
+            yield return null;
+        }
+
         if (TurnManager.Instance != null) TurnManager.Instance.ProcessNextEnemy();
     }
 
 
     void HandleFall()
     {
-        TurnManager.Instance.isRagdolling = true;
-        
-        // if (IsDead || ragdollReset.isDead) 
-        // {
-        //     StopAllCoroutines();
-        //     CleanupAttack();
-        //     return;
-        // }
-
         if (TurnManager.Instance != null && TurnManager.Instance.currentState == GameState.EnemyTurn)
         {
             if (isShooting && !hasAttackedThisTurn)
@@ -211,8 +212,13 @@ public class Enemy_attack : MonoBehaviour
 
     void HandleStandUp()
     {
-        TurnManager.Instance.isRagdolling = false;
-
+        if (TurnManager.Instance != null && TurnManager.Instance.currentState == GameState.EnemyTurn)
+        {
+            if (isShooting && !hasAttackedThisTurn)
+            {
+                StartCoroutine(PerformAttackRoutine()); 
+            }
+        }
     }
 
 
@@ -283,6 +289,13 @@ void SpawnProjectile()
     private void DrawTrajectory(Vector2 velocity)
     {
         if (lineRenderer == null) return;
+
+        // Show the projectile in hand while aiming (same as player behavior).
+        if (currentProjectile != null && !currentProjectile.gameObject.activeSelf)
+        {
+            currentProjectile.gameObject.SetActive(true);
+        }
+
         Vector3[] p = new Vector3[trajectoryStepCount];
         for (int i = 0; i < trajectoryStepCount; i++)
         {

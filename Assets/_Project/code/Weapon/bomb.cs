@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 
 public class Bomb : MonoBehaviour
 {
@@ -11,27 +10,34 @@ public class Bomb : MonoBehaviour
     public LayerMask layerMask;
 
     private WeaponInfo weaponInfo;
-    
-    private bool hasStartedTimer = false;    void Start()
+
+    private bool isArmed = false;
+    private bool exploded = false;
+    private Coroutine fuseRoutine;
+
+    void Start()
     {
         weaponInfo = GetComponent<WeaponInfo>();
         if (weaponInfo == null) Debug.LogError("Missing WeaponInfo on Bomb");
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void Arm()
     {
-        if (!hasStartedTimer)
-        {
-            StartCoroutine(EnableNade());
-            hasStartedTimer = true;
-        }
+        if (isArmed || exploded) return;
+        isArmed = true;
+        if (fuseRoutine != null) StopCoroutine(fuseRoutine);
+        fuseRoutine = StartCoroutine(FuseRoutine());
     }
 
     public void Explode()
     {
-        if (TurnManager.Instance.hasExploded || weaponInfo == null || weaponInfo._weapon == null) return;
-        TurnManager.Instance.hasExploded = true;
-        TurnManager.Instance.Finish_turn = true;
+        if (exploded || weaponInfo == null || weaponInfo._weapon == null) return;
+        exploded = true;
+
+        if (TurnManager.Instance != null)
+        {
+            TurnManager.Instance.Finish_turn = true;
+        }
 
         float maxDamage = weaponInfo._weapon.damage; 
         float maxKnockback = weaponInfo._weapon.knockbackForce;
@@ -54,22 +60,24 @@ public class Bomb : MonoBehaviour
             if (partHit != null && partHit.mainScript != null)
             {
                 float damageToApply = 0f;
+                float forceToApply = Mathf.Max(finalForce, partHit.mainScript.minKnockbackForce);
                 
                 if (!damagedVictims.Contains(partHit.mainScript))
                 {
                     damageToApply = finalDamage;
                     damagedVictims.Add(partHit.mainScript);
                 }
-                partHit.mainScript.ReceiveImpact(damageToApply, finalForce, pushDirection, partHit.transform);
+                partHit.mainScript.ReceiveImpact(damageToApply, forceToApply, pushDirection, partHit.transform);
             }
             else
             {
                 hit hitScript = obj.GetComponent<hit>();
                 if (hitScript != null)
                 {
+                    float forceToApply = Mathf.Max(finalForce, hitScript.minKnockbackForce);
                     if (!damagedVictims.Contains(hitScript))
                     {
-                        hitScript.ReceiveImpact(finalDamage, finalForce, pushDirection, obj.transform);
+                        hitScript.ReceiveImpact(finalDamage, forceToApply, pushDirection, obj.transform);
                         damagedVictims.Add(hitScript);
                     }
                 }
@@ -83,16 +91,13 @@ public class Bomb : MonoBehaviour
             }
         }
 
-        // Reset hasExploded trước destroy để bom lần sau có thể nổ
-        TurnManager.Instance.hasExploded = false;
         Destroy(gameObject);
     }
 
-    IEnumerator EnableNade()
+    private IEnumerator FuseRoutine()
     {
         yield return new WaitForSeconds(waitTime);
         Explode();
-        Debug.Log("bom nổ");
     }
     
     void OnDrawGizmosSelected()

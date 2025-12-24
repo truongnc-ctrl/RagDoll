@@ -9,9 +9,6 @@ public class ProjectileBehavior : MonoBehaviour
     public float MaxLifeTime = 5f;
     public bool IsDestroyed = true;
 
-
-
-
     private ProjectileRotation rotator;
     private Rigidbody2D rb;
     private Collider2D col;
@@ -49,6 +46,11 @@ public class ProjectileBehavior : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Dynamic;
         rb.linearVelocity = velocity;
 
+        Bomb bomb = GetComponent<Bomb>();
+        if (bomb != null)
+        {
+            bomb.Arm();
+        }
 
         StartCoroutine(EnableColliderRoutine(colliderDelay));
     }
@@ -63,13 +65,19 @@ public class ProjectileBehavior : MonoBehaviour
     {
         if((layerMask.value & (1 << collision.gameObject.layer)) > 0)
         {
-            TurnManager.Instance.hasCollided = true;
-            CollisionTimer = 0f;
-            if(IsDestroyed && !StartedDestroyRoutine)
+            bool isNade = _weaponInfo != null
+                          && _weaponInfo._weapon != null
+                          && _weaponInfo._weapon.currentWeaponType == TypeWeapon.nade;
+
+            if (!isNade)
             {
-                StartedDestroyRoutine = true;
-                StartCoroutine(DestroyAfterTimeRoutine());
-                
+                TurnManager.Instance.hasCollided = true;
+                CollisionTimer = 0f;
+                if(IsDestroyed && !StartedDestroyRoutine)
+                {
+                    StartedDestroyRoutine = true;
+                    StartCoroutine(DestroyAfterTimeRoutine());
+                }
             }
 
         }
@@ -93,18 +101,20 @@ public class ProjectileBehavior : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log("Finish turn : "+TurnManager.Instance.Finish_turn +"ragdol_fall : "+ TurnManager.Instance.isRagdolling + " hasCollided : "+ TurnManager.Instance.hasCollided );
         if (TurnManager.Instance.Finish_turn == true) return;
         if (TurnManager.Instance.hasCollided == true)
         {
-            if (rb.linearVelocity.sqrMagnitude <= StopVelocityThreshold && !_weaponInfo._weapon.currentWeaponType.Equals(TypeWeapon.nade)) 
+            bool isNade = _weaponInfo != null
+                          && _weaponInfo._weapon != null
+                          && _weaponInfo._weapon.currentWeaponType == TypeWeapon.nade;
+
+            float stopThresholdSqr = StopVelocityThreshold * StopVelocityThreshold;
+            if (rb.linearVelocity.sqrMagnitude <= stopThresholdSqr && !isNade) 
             {
                 TurnManager.Instance.Finish_turn =true; 
                 rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0f;
                 rotator.isSpinning = false;
-                Debug.Log("đã dừng ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
-                Debug.Log(CollisionTimer);
 
             }
         }

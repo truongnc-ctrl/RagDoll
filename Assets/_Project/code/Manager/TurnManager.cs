@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,18 +35,32 @@ public class TurnManager : MonoBehaviour
     public bool IsPlayerTurn => currentState == GameState.PlayerTurn;
     public bool IsProcess => currentState == GameState.Processing;
 
-    // Round-robin index: which enemy should act next (1 enemy per player turn)
     private int nextEnemyIndex = 0;
     private Enemy_attack currentEnemy;
     private bool currentEnemyRemovedThisTurn = false;
     private bool isEnemyPhase = false;
 
+    private Coroutine enemyTurnRoutine;
+    private int enemyTurnToken = 0;
+    private Coroutine enemyAdvanceAfterResolutionRoutine;
 
-    public bool hasExploded = false;
+
     public bool Finish_turn = true;
     public bool hasCollided = false;
-    // public bool isDead  = false;
     public bool isRagdolling = false;
+    private int ragdollCount = 0;
+
+    public void BeginRagdoll()
+    {
+        ragdollCount++;
+        isRagdolling = ragdollCount > 0;
+    }
+
+    public void EndRagdoll()
+    {
+        ragdollCount = Mathf.Max(0, ragdollCount - 1);
+        isRagdolling = ragdollCount > 0;
+    }
 
 
 
@@ -152,16 +165,23 @@ public class TurnManager : MonoBehaviour
         if (currentState == GameState.win || currentState == GameState.lose) return;
         Finish_turn = true;
         hasCollided = false;
-        hasExploded = false;
 
-        // Start at player turn
+        if (enemyTurnRoutine != null)
+        {
+            StopCoroutine(enemyTurnRoutine);
+            enemyTurnRoutine = null;
+        }
+        enemyTurnToken++;
+
         isEnemyPhase = false;
         currentEnemy = null;
         currentEnemyRemovedThisTurn = false;
 
+        ragdollCount = 0;
+        isRagdolling = false;
+
         currentState = GameState.Processing;
 
-        // Drop any enemies that died before the player's turn starts
         CleanupDeadEnemies();
 
         if (line == null || line.IsDead)
@@ -176,7 +196,6 @@ public class TurnManager : MonoBehaviour
             return;
         }
 
-        // Ensure index is within range after cleanup
         if (nextEnemyIndex >= livingEnemies.Count) nextEnemyIndex = 0;
 
         StartCoroutine(HandlePlayerTurn());
@@ -204,7 +223,6 @@ public class TurnManager : MonoBehaviour
     {
         if (currentState == GameState.win || currentState == GameState.lose) return;
         hasCollided = false;
-        hasExploded = false;
         Finish_turn = false;
 
         if (isEnemyPhase)
@@ -224,7 +242,6 @@ public class TurnManager : MonoBehaviour
     {
         if (currentState == GameState.win || currentState == GameState.lose) yield break;
         
-        // While waiting for physics/animations to settle, do not stay in PlayerTurn
         currentState = GameState.Processing;
 
         Finish_turn = false;
@@ -235,59 +252,60 @@ public class TurnManager : MonoBehaviour
         Choose_weapon_Tab.Instance.OpenWeaponTab();
     }
 
-    IEnumerator HandleEnemyTurn(Enemy_attack enemy)
+    IEnumerator HandleEnemyTurn(Enemy_attack enemy, int token)
     {
-        // Immediately leave PlayerTurn so the player can't act twice
         currentState = GameState.Processing;
 
         Finish_turn = false;
         hasCollided = false;
-        currentState = GameState.EnemyTurn;
 
+        yield return new WaitForSeconds(2f);
 
-        // Ensure exactly 1 living enemy acts after the player.
-        // If the chosen enemy dies before their turn (or during the pre-attack delay),
-        // immediately pick the next living enemy instead of giving the player an extra turn.
-        while (true)
+        if (token != enemyTurnToken || !isEnemyPhase || currentState == GameState.win || currentState == GameState.lose)
         {
-            CleanupDeadEnemies();
-            if (livingEnemies.Count == 0)
+            yield break;
+        }
+
+        CleanupDeadEnemies();
+        if (livingEnemies.Count == 0)
+        {
+            OnTeamDefeated(enemyLayer);
+            yield break;
+        }
+
+        while (enemy == null || enemy.IsDead)
+        {
+            enemy = GetNextLivingEnemy(ref nextEnemyIndex);
+            if (enemy == null)
             {
                 OnTeamDefeated(enemyLayer);
                 yield break;
             }
+        }
 
-            // If the passed enemy is dead/null, find the next living one.
-            if (enemy == null || enemy.IsDead)
-            {
-                Enemy_attack next = GetNextLivingEnemy(ref nextEnemyIndex);
-                if (next == null)
-                {
-                    OnTeamDefeated(enemyLayer);
-                    yield break;
-                }
-
-                enemy = next;
-            }
-
-            yield return new WaitForSeconds(2f);
-
-            // Enemy might die while waiting; if so, loop and pick another.
-            if (enemy == null || enemy.IsDead) continue;
-
-            currentEnemy = enemy;
-            currentEnemyRemovedThisTurn = false;
-            currentState = GameState.EnemyTurn;
-            Turn_text.text = "Enemy turn";
-            enemy.StartAttack();
+        if (token != enemyTurnToken || !isEnemyPhase || currentState == GameState.win || currentState == GameState.lose)
+        {
             yield break;
         }
+
+        currentEnemy = enemy;
+        currentEnemyRemovedThisTurn = false;
+        currentState = GameState.EnemyTurn;
+        if (Turn_text != null) Turn_text.text = "Enemy turn";
+        enemy.StartAttack();
        
     }
     
     public void ProcessNextEnemy()
     {
         if (currentState == GameState.win || currentState == GameState.lose) return;
+
+        if (enemyTurnRoutine != null)
+        {
+            StopCoroutine(enemyTurnRoutine);
+            enemyTurnRoutine = null;
+        }
+        enemyTurnToken++;
 
         CleanupDeadEnemies();
         if (livingEnemies.Count == 0)
@@ -296,7 +314,6 @@ public class TurnManager : MonoBehaviour
             return;
         }
 
-        // Advance round-robin pointer to the enemy after the one that just acted.
         if (!currentEnemyRemovedThisTurn && currentEnemy != null)
         {
             int idx = livingEnemies.IndexOf(currentEnemy);
@@ -310,17 +327,44 @@ public class TurnManager : MonoBehaviour
         currentEnemyRemovedThisTurn = false;
         currentEnemy = null;
 
-        // After 1 enemy acts -> back to player
+
         isEnemyPhase = false;
         currentState = GameState.Processing;
         StartCoroutine(HandlePlayerTurn());
+    }
+
+    public void RequestProcessNextEnemyAfterResolution()
+    {
+        if (currentState == GameState.win || currentState == GameState.lose) return;
+
+        if (enemyAdvanceAfterResolutionRoutine != null)
+        {
+            StopCoroutine(enemyAdvanceAfterResolutionRoutine);
+            enemyAdvanceAfterResolutionRoutine = null;
+        }
+
+        enemyAdvanceAfterResolutionRoutine = StartCoroutine(ProcessNextEnemyAfterResolutionRoutine());
+    }
+
+    private IEnumerator ProcessNextEnemyAfterResolutionRoutine()
+    {
+        while (currentState != GameState.win
+               && currentState != GameState.lose
+               && (!Finish_turn || isRagdolling))
+        {
+            yield return null;
+        }
+
+        enemyAdvanceAfterResolutionRoutine = null;
+
+        if (currentState == GameState.win || currentState == GameState.lose) yield break;
+        ProcessNextEnemy();
     }
 
     public void EndPlayerTurn()
     {
         if (currentState == GameState.win || currentState == GameState.lose) return;
 
-        // After player acts, re-check living enemies and start enemy phase.
         CleanupDeadEnemies();
         if (livingEnemies.Count == 0)
         {
@@ -336,7 +380,6 @@ public class TurnManager : MonoBehaviour
         hasCollided = false;
         Finish_turn = false;
 
-        // Immediately leave PlayerTurn so Line can reset hasFired
         currentState = GameState.Processing;
 
         Enemy_attack enemy = GetNextLivingEnemy(ref nextEnemyIndex);
@@ -346,7 +389,14 @@ public class TurnManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(HandleEnemyTurn(enemy));
+        if (enemyTurnRoutine != null)
+        {
+            StopCoroutine(enemyTurnRoutine);
+            enemyTurnRoutine = null;
+        }
+        enemyTurnToken++;
+        int token = enemyTurnToken;
+        enemyTurnRoutine = StartCoroutine(HandleEnemyTurn(enemy, token));
     }
 
     private Enemy_attack GetNextLivingEnemy(ref int startIndex)
@@ -372,6 +422,5 @@ public class TurnManager : MonoBehaviour
 
         return null;
     }
-
 
 }

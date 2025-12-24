@@ -165,7 +165,7 @@ public class hit : MonoBehaviour
         {
             stand = false; 
 
-            if (ragdollReset != null)
+            if (ragdollReset != null && !ragdollReset.isDead)
             {
                 ragdollReset.TriggerFall(); 
             }

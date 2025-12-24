@@ -5,7 +5,6 @@ using System;
 
 public class RagdollReset : MonoBehaviour
 {
-    public event Action OnFallStart;      
     public event Action OnStandUpComplete;
 
     [Header("Settings")]
@@ -24,6 +23,8 @@ public class RagdollReset : MonoBehaviour
     private Health _healthScript; 
     
     public bool isDead  = false;
+
+    private bool isFalling = false;
 
 
     void Awake()
@@ -49,8 +50,8 @@ public class RagdollReset : MonoBehaviour
 
     public void TriggerFall()
     {
-        if (TurnManager.Instance.isRagdolling || isDead) return;
-        OnFallStart?.Invoke(); 
+        if (isDead || isFalling) return;
+        isFalling = true;
         StartCoroutine(FallAndStandRoutine());
 
     }
@@ -59,10 +60,16 @@ public class RagdollReset : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
+        if (isFalling)
+        {
+            if (TurnManager.Instance != null) 
+            {
+                TurnManager.Instance.EndRagdoll();
+            }
+        }
         StopAllCoroutines(); 
         ToggleBalance(false); 
         ForceCollapse(); 
-        OnFallStart?.Invoke();
     }
 
 
@@ -76,7 +83,7 @@ public class RagdollReset : MonoBehaviour
 
     IEnumerator FallAndStandRoutine()
     {
-        TurnManager.Instance.isRagdolling = true;
+        if (TurnManager.Instance != null) TurnManager.Instance.BeginRagdoll();
         ToggleBalance(false);
         yield return new WaitForSeconds(timeToReset);
 
@@ -107,7 +114,8 @@ public class RagdollReset : MonoBehaviour
             }
             OnStandUpComplete?.Invoke();
         }
-        TurnManager.Instance.isRagdolling = false;
+        isFalling = false;
+        if (TurnManager.Instance != null) TurnManager.Instance.EndRagdoll();
     }
 
     private void ToggleBalance(bool state, float overrideForce = -1f)
