@@ -31,6 +31,7 @@ public class Enemy_attack : MonoBehaviour
     private RagdollReset ragdollReset;
 
 
+
     void Start()
     {
         if(lineRenderer != null) lineRenderer.positionCount = 0;
@@ -62,7 +63,10 @@ public class Enemy_attack : MonoBehaviour
     void OnDestroy()
     {
         if (_healthScript != null) _healthScript.OnDeath -= ForceDeath;
-        if (TurnManager.Instance != null) TurnManager.Instance.UnregisterEnemy(this);
+        if (TurnManager.Instance != null && TurnManager.Instance.gameObject != null)
+        {
+            TurnManager.Instance.UnregisterEnemy(this);
+        }
         if (ragdollReset != null)
         {
             ragdollReset.OnStandUpComplete -= HandleStandUp;
@@ -72,6 +76,8 @@ public class Enemy_attack : MonoBehaviour
     public void ForceDeath()
     {
         if (IsDead) return;
+
+
         
         IsDead = true; 
         if(ragdollReset != null) ragdollReset.isDead = true; 

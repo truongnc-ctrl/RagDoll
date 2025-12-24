@@ -7,7 +7,9 @@ public class Knife : MonoBehaviour
     private Collider2D col;
     
     [Header("State Settings")]
+
     public float minDamageToStick = 10f;
+
     
     [Header("Fixed Rotation")]
     public float fixedStuckAngle = -72f; 
@@ -18,6 +20,10 @@ public class Knife : MonoBehaviour
 
     [Header("Visual Settings")]
     public Transform stabPoint;
+
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem BloodEffect;
+    [SerializeField] private AudioSource stabSound;
     
     ProjectileRotation projectileRotation; 
     ProjectileBehavior _projectileBehavior;
@@ -37,6 +43,7 @@ public class Knife : MonoBehaviour
         {
             projectileRotation.SetRotation(false);
             _projectileBehavior.IsDestroyed = true;
+
         }
     }
 
@@ -71,5 +78,12 @@ public class Knife : MonoBehaviour
         if (col != null) col.enabled = false;
         
         transform.SetParent(targetBone);
+        if (BloodEffect != null)
+        {
+            BloodEffect.transform.SetParent(targetBone);
+            BloodEffect.Play();
+            stabSound.Play();
+        }
+
     }
 }

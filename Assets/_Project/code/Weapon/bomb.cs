@@ -7,6 +7,8 @@ public class Bomb : MonoBehaviour
     [Header("Explosion Settings")]
     [SerializeField] private float fieldOfImpact = 5f;
     [SerializeField] private float waitTime = 1f;
+    [SerializeField] private ParticleSystem explosionEffect;
+    [SerializeField] private AudioSource explosionSound;
     public LayerMask layerMask;
 
     private WeaponInfo weaponInfo;
@@ -33,6 +35,20 @@ public class Bomb : MonoBehaviour
     {
         if (exploded || weaponInfo == null || weaponInfo._weapon == null) return;
         exploded = true;
+        if (explosionEffect != null)
+        {
+            explosionEffect.transform.SetParent(null);
+            explosionEffect.Play();
+            explosionEffect.Play();
+            
+            Destroy(explosionEffect.gameObject, explosionEffect.main.duration);
+        }
+        if (explosionSound != null)
+        {
+            explosionSound.transform.SetParent(null);
+            explosionSound.Play();
+        }
+        Camera_Shake.Instance.Shake();
 
         if (TurnManager.Instance != null)
         {
@@ -90,7 +106,8 @@ public class Bomb : MonoBehaviour
                 }
             }
         }
-
+        
+        // Hủy quả bom
         Destroy(gameObject);
     }
 

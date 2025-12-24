@@ -1,0 +1,728 @@
+fileFormatVersion: 2
+guid: 3b6bf62128920824ab7db407778a69a5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1554698901051827393
+    second: decal_gibs_0
+  - first:
+      213: -2891465121650099641
+    second: decal_gibs_1
+  - first:
+      213: -1938667743958493911
+    second: decal_gibs_2
+  - first:
+      213: -6134848960331191204
+    second: decal_gibs_3
+  - first:
+      213: 4116085288971955941
+    second: decal_gibs_4
+  - first:
+      213: 5697170828052068654
+    second: decal_gibs_5
+  - first:
+      213: 2608881725379776167
+    second: decal_gibs_6
+  - first:
+      213: 9219283858360600152
+    second: decal_gibs_7
+  - first:
+      213: 3937631551819065086
+    second: decal_gibs_8
+  - first:
+      213: 2622480648095756130
+    second: decal_gibs_9
+  - first:
+      213: 5195531653675739758
+    second: decal_gibs_10
+  - first:
+      213: 7359460114714622003
+    second: decal_gibs_11
+  - first:
+      213: -1669125082845766094
+    second: decal_gibs_12
+  - first:
+      213: -1403156123193333308
+    second: decal_gibs_13
+  - first:
+      213: 2904378748251794702
+    second: decal_gibs_14
+  - first:
+      213: 3556496279143605389
+    second: decal_gibs_15
+  - first:
+      213: 8414633547223815163
+    second: decal_gibs_16
+  - first:
+      213: -2636052671718864446
+    second: decal_gibs_17
+  - first:
+      213: 4435653637792737646
+    second: decal_gibs_18
+  - first:
+      213: -1796121835655036924
+    second: decal_gibs_19
+  - first:
+      213: -2895165252329841322
+    second: decal_gibs_20
+  - first:
+      213: 5296081910579758472
+    second: decal_gibs_21
+  - first:
+      213: 4172708306058745195
+    second: decal_gibs_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: decal_gibs_0
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 779
+        width: 54
+        height: 244
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c462e1d966639510800000000000000
+      internalID: 1554698901051827393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_1
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 788
+        width: 46
+        height: 222
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74a3d9f9ac37fd7d0800000000000000
+      internalID: -2891465121650099641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_2
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 779
+        width: 54
+        height: 232
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92598d755f77815e0800000000000000
+      internalID: -1938667743958493911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_3
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 784
+        width: 58
+        height: 227
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5ce8c8df53acdaa0800000000000000
+      internalID: -6134848960331191204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_4
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 775
+        width: 57
+        height: 244
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ee626a23c54f1930800000000000000
+      internalID: 4116085288971955941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_5
+      rect:
+        serializedVersion: 2
+        x: 670
+        y: 783
+        width: 45
+        height: 147
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e29f2c6eeaa601f40800000000000000
+      internalID: 5697170828052068654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_6
+      rect:
+        serializedVersion: 2
+        x: 682
+        y: 837
+        width: 27
+        height: 169
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ae05465b1c943420800000000000000
+      internalID: 2608881725379776167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_7
+      rect:
+        serializedVersion: 2
+        x: 716
+        y: 839
+        width: 20
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8568315c2d971ff70800000000000000
+      internalID: 9219283858360600152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_8
+      rect:
+        serializedVersion: 2
+        x: 812
+        y: 774
+        width: 41
+        height: 244
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef6ab8ea80745a630800000000000000
+      internalID: 3937631551819065086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_9
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 784
+        width: 23
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26f6514414ce46420800000000000000
+      internalID: 2622480648095756130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_10
+      rect:
+        serializedVersion: 2
+        x: 933
+        y: 777
+        width: 54
+        height: 233
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6ae3ac038c3a1840800000000000000
+      internalID: 5195531653675739758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_11
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 520
+        width: 230
+        height: 237
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33878347bfd022660800000000000000
+      internalID: 7359460114714622003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_12
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 527
+        width: 207
+        height: 211
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23e984f949316d8e0800000000000000
+      internalID: -1669125082845766094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_13
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 531
+        width: 209
+        height: 212
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c9a5a0b0fcf68ce0800000000000000
+      internalID: -1403156123193333308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_14
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 535
+        width: 207
+        height: 179
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0dedbe551d6e4820800000000000000
+      internalID: 2904378748251794702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_15
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 296
+        width: 198
+        height: 203
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d846a53d5863b5130800000000000000
+      internalID: 3556496279143605389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_16
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 268
+        width: 178
+        height: 209
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf35c59e0a8c6c470800000000000000
+      internalID: 8414633547223815163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_17
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 269
+        width: 198
+        height: 199
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c94afcbf0cda6bd0800000000000000
+      internalID: -2636052671718864446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_18
+      rect:
+        serializedVersion: 2
+        x: 810
+        y: 269
+        width: 197
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e692e438b7b9e8d30800000000000000
+      internalID: 4435653637792737646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_19
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 5
+        width: 164
+        height: 215
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 400857ce4b4e217e0800000000000000
+      internalID: -1796121835655036924
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_20
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 33
+        width: 222
+        height: 160
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65d53d0da8e42d7d0800000000000000
+      internalID: -2895165252329841322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_21
+      rect:
+        serializedVersion: 2
+        x: 530
+        y: 33
+        width: 195
+        height: 201
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8858a7510767f7940800000000000000
+      internalID: 5296081910579758472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decal_gibs_22
+      rect:
+        serializedVersion: 2
+        x: 790
+        y: 41
+        width: 226
+        height: 171
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6514fda81078e930800000000000000
+      internalID: 4172708306058745195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      decal_gibs_0: 1554698901051827393
+      decal_gibs_1: -2891465121650099641
+      decal_gibs_10: 5195531653675739758
+      decal_gibs_11: 7359460114714622003
+      decal_gibs_12: -1669125082845766094
+      decal_gibs_13: -1403156123193333308
+      decal_gibs_14: 2904378748251794702
+      decal_gibs_15: 3556496279143605389
+      decal_gibs_16: 8414633547223815163
+      decal_gibs_17: -2636052671718864446
+      decal_gibs_18: 4435653637792737646
+      decal_gibs_19: -1796121835655036924
+      decal_gibs_2: -1938667743958493911
+      decal_gibs_20: -2895165252329841322
+      decal_gibs_21: 5296081910579758472
+      decal_gibs_22: 4172708306058745195
+      decal_gibs_3: -6134848960331191204
+      decal_gibs_4: 4116085288971955941
+      decal_gibs_5: 5697170828052068654
+      decal_gibs_6: 2608881725379776167
+      decal_gibs_7: 9219283858360600152
+      decal_gibs_8: 3937631551819065086
+      decal_gibs_9: 2622480648095756130
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

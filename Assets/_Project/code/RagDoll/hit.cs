@@ -19,6 +19,7 @@ public class hit : MonoBehaviour
     public float damageThresholdToRagdoll = 20f;
     public float minKnockbackForce = 5f;
 
+
     private float minDamageVelocity;
     private float maxDamageVelocity;
     
@@ -84,7 +85,6 @@ public class hit : MonoBehaviour
         {
             mainRb.linearVelocity = Vector2.zero; 
         }
-
         WeaponInfo weaponInfo = collision.collider.GetComponent<WeaponInfo>();
         Knife incomingKnife = collision.collider.GetComponent<Knife>();
         ProjectileRotation projectileRotation = collision.collider.GetComponent<ProjectileRotation>();
@@ -111,6 +111,10 @@ public class hit : MonoBehaviour
             float finalForce = baseForce * velocityFactor;
 
             finalDamage *= partHit.damageMultiplier;
+            if (finalDamage > 0 && ragdollReset != null && !ragdollReset.isDead)
+            {
+                Ouch_sound_enemy.Instance.PlayOuchSound();
+            } 
             
             Vector2 knockbackDir = (partHit.transform.position - collision.transform.position).normalized;
 

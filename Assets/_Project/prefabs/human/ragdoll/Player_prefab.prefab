@@ -994,6 +994,10 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: 0.78720284
       objectReference: {fileID: 0}
+    - target: {fileID: 7015565556505961317, guid: 0409ec5d33ae37d4e9fdb1effeddfabc, type: 3}
+      propertyPath: m_SortingOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 7505895686244103459, guid: 0409ec5d33ae37d4e9fdb1effeddfabc, type: 3}
       propertyPath: m_Anchor.x
       value: 0

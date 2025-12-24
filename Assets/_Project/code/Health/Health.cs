@@ -13,7 +13,9 @@ public class Health : MonoBehaviour, IDamageable
     public float currentHealth;
     
     [SerializeField] private HealthBar healthBar;
+    public Vibrations vibrations;
     private bool isDead = false;
+
 
     void OnEnable()
     {
@@ -38,6 +40,7 @@ public class Health : MonoBehaviour, IDamageable
     void Start()
     {
         currentHealth = maxHealth;
+        vibrations = GetComponent<Vibrations>();
         if (healthBar != null) healthBar.Initialize(maxHealth);
     }
 
@@ -45,6 +48,8 @@ public class Health : MonoBehaviour, IDamageable
     {
         if (isDead) return;
         currentHealth -= amount;
+        Ouch_sound_enemy.Instance.PlayOuchSound();  
+        if (vibrations != null) vibrations.LightVibration();
         if (currentHealth < 0) currentHealth = 0;
         if (healthBar != null) healthBar.UpdateHealthUI(currentHealth);
         if (currentHealth <= 0) Die();
