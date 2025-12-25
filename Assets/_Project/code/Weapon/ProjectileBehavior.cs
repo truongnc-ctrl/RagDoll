@@ -115,6 +115,7 @@ public class ProjectileBehavior : MonoBehaviour
                 rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0f;
                 rotator.isSpinning = false;
+                rotator.SetRotation(false);
 
             }
         }

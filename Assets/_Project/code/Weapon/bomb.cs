@@ -8,7 +8,6 @@ public class Bomb : MonoBehaviour
     [SerializeField] private float fieldOfImpact = 5f;
     [SerializeField] private float waitTime = 1f;
     [SerializeField] private ParticleSystem explosionEffect;
-    [SerializeField] private AudioSource explosionSound;
     public LayerMask layerMask;
 
     private WeaponInfo weaponInfo;
@@ -43,12 +42,11 @@ public class Bomb : MonoBehaviour
             
             Destroy(explosionEffect.gameObject, explosionEffect.main.duration);
         }
-        if (explosionSound != null)
+        if (Bomb_Sound.Instance != null)
         {
-            explosionSound.transform.SetParent(null);
-            explosionSound.Play();
+            Bomb_Sound.Instance.PlayExplosionSound();
         }
-        Camera_Shake.Instance.Shake();
+        if (Camera_Shake.Instance != null  && Camera_shake_settings.instance.shake_on == true) Camera_Shake.Instance.Shake();
 
         if (TurnManager.Instance != null)
         {
@@ -106,8 +104,7 @@ public class Bomb : MonoBehaviour
                 }
             }
         }
-        
-        // Hủy quả bom
+
         Destroy(gameObject);
     }
 

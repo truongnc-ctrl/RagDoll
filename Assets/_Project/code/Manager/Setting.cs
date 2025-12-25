@@ -5,6 +5,7 @@ public class setting : MonoBehaviour
 {
     [SerializeField] private GameObject settting_panel;
     [SerializeField] private GameObject button;
+    [SerializeField] private GameObject Main_Game;
     public bool settingIsOpen = false;
 
     public void open()
@@ -13,7 +14,7 @@ public class setting : MonoBehaviour
         button.SetActive(false);
         Debug.Log("mỏ setting");
         settingIsOpen = true;
-        Time.timeScale = 0;
+        Main_Game.SetActive(false);
     }
     public void close()
     {
@@ -21,7 +22,7 @@ public class setting : MonoBehaviour
         button.SetActive(true);
         Debug.Log("đóng setting");
         settingIsOpen = false;
-        Time.timeScale = 1;
+        Main_Game.SetActive(true);
     }
 
 }

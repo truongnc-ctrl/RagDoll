@@ -31,6 +31,7 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private GameObject lose;
     [SerializeField] private GameObject win;
     [SerializeField] private GameObject Weapon_Tab;
+    [SerializeField] private GameObject Main_Game;
 
     private List<Enemy_attack> livingEnemies = new List<Enemy_attack>();
     public bool IsPlayerTurn => currentState == GameState.PlayerTurn;
@@ -71,6 +72,7 @@ public class TurnManager : MonoBehaviour
         else Destroy(gameObject);
         lose.SetActive(false);
         win.SetActive(false);
+        Main_Game.SetActive(true);
         Application.targetFrameRate = 60;
     }
 
@@ -147,6 +149,7 @@ public class TurnManager : MonoBehaviour
                 if (lose != null && lose.gameObject != null) lose.SetActive(true);
                 if (win != null && win.gameObject != null) win.SetActive(false);
                 if (Weapon_Tab != null && Weapon_Tab.gameObject != null) Weapon_Tab.SetActive(false);
+                Main_Game.SetActive(false);
                 StopAllCoroutines();
             }
         }
@@ -158,6 +161,7 @@ public class TurnManager : MonoBehaviour
                 if (lose != null && lose.gameObject != null) lose.SetActive(false);
                 if (win != null && win.gameObject != null) win.SetActive(true);
                 if (Weapon_Tab != null && Weapon_Tab.gameObject != null) Weapon_Tab.SetActive(false);
+                Main_Game.SetActive(false);
                 StopAllCoroutines();
             }
         }

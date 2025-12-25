@@ -49,7 +49,10 @@ public class Health : MonoBehaviour, IDamageable
         if (isDead) return;
         currentHealth -= amount;
         Ouch_sound_enemy.Instance.PlayOuchSound();  
-        if (vibrations != null) vibrations.LightVibration();
+        if (vibrations != null && Vibration_settings.instance.vibration_on == true)
+        {
+            vibrations.LightVibration();
+        }
         if (currentHealth < 0) currentHealth = 0;
         if (healthBar != null) healthBar.UpdateHealthUI(currentHealth);
         if (currentHealth <= 0) Die();

@@ -12,7 +12,7 @@ public class Ouch_sound_enemy : MonoBehaviour
     }
     public void PlayOuchSound()
     {
-        if (OuchSound != null && OuchSound.isPlaying == false)
+        if (OuchSound != null && OuchSound.isActiveAndEnabled && !OuchSound.isPlaying)
         {
             OuchSound.Play();
         }
