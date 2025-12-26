@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using DG.Tweening;
+using UnityEngine.UI;
 
 public enum GameState
 {
@@ -28,8 +30,8 @@ public class TurnManager : MonoBehaviour
     public Line line; 
 
     [Header("Panel")]
-    [SerializeField] private GameObject lose;
-    [SerializeField] private GameObject win;
+    [SerializeField] private Image lose;
+    [SerializeField] private Image win;
     [SerializeField] private GameObject Weapon_Tab;
     [SerializeField] private GameObject Main_Game;
 
@@ -44,6 +46,8 @@ public class TurnManager : MonoBehaviour
 
     private Coroutine enemyTurnRoutine;
     private int enemyTurnToken = 0;
+    private bool isApplicationQuitting = false;
+    private bool isDestroying = false;
     private Coroutine enemyAdvanceAfterResolutionRoutine;
 
 
@@ -70,9 +74,9 @@ public class TurnManager : MonoBehaviour
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
-        lose.SetActive(false);
-        win.SetActive(false);
-        Main_Game.SetActive(true);
+        lose.gameObject.SetActive(false);
+        win.gameObject.SetActive(false);
+        if (Main_Game) Main_Game.SetActive(true);
         Application.targetFrameRate = 60;
     }
 
@@ -80,6 +84,16 @@ public class TurnManager : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         StartCoroutine(StartGameRoutine());
+    }
+    private void OnApplicationQuit()
+    {
+        isApplicationQuitting = true;
+    }
+    private void OnDestroy()
+    {
+        isDestroying = true; 
+        transform.DOKill(); 
+        DOTween.KillAll(); 
     }
 
 
@@ -102,6 +116,8 @@ public class TurnManager : MonoBehaviour
 
     public void UnregisterEnemy(Enemy_attack enemy)
     {
+        if (isApplicationQuitting || isDestroying || !gameObject.scene.isLoaded) return;
+
         if (enemy == null) return;
 
         int removedIndex = livingEnemies.IndexOf(enemy);
@@ -133,22 +149,33 @@ public class TurnManager : MonoBehaviour
 
         Debug.Log(enemy + "remove");
 
-        if (livingEnemies.Count == 0)
+        if (livingEnemies.Count == 0 )
         {
+            if(this.gameObject == null ) return;
             OnTeamDefeated(enemyLayer);
         }
     }
 
-    public void OnTeamDefeated(LayerMask defeatedLayer)
+   public void OnTeamDefeated(LayerMask defeatedLayer)
     {
+        if (isApplicationQuitting) return;
         if ((defeatedLayer & playerLayer) != 0)
         {
             if (currentState != GameState.win)
             {
                 currentState = GameState.lose;
-                if (lose != null && lose.gameObject != null) lose.SetActive(true);
-                if (win != null && win.gameObject != null) win.SetActive(false);
-                if (Weapon_Tab != null && Weapon_Tab.gameObject != null) Weapon_Tab.SetActive(false);
+                if (lose) 
+                {
+                    lose.DOFade(1, 1f)
+                        .SetLink(lose.gameObject) 
+                        .OnComplete(() => 
+                        {
+                            if (lose) lose.gameObject.SetActive(true);
+                        });
+                }
+                
+                if (win) win.gameObject.SetActive(false);
+                if (Weapon_Tab) Weapon_Tab.SetActive(false);
                 Main_Game.SetActive(false);
                 StopAllCoroutines();
             }
@@ -158,9 +185,20 @@ public class TurnManager : MonoBehaviour
             if (currentState != GameState.lose)
             {
                 currentState = GameState.win;
-                if (lose != null && lose.gameObject != null) lose.SetActive(false);
-                if (win != null && win.gameObject != null) win.SetActive(true);
-                if (Weapon_Tab != null && Weapon_Tab.gameObject != null) Weapon_Tab.SetActive(false);
+                if (lose) lose.gameObject.SetActive(false);
+                
+                if (win)
+                {
+                    win.DOFade(1, 1f)
+                        .SetLink(win.gameObject)
+                        .OnComplete(() => 
+                        {
+                            if (win) win.gameObject.SetActive(true);
+                        });
+                }
+                
+                if (Weapon_Tab) Weapon_Tab.SetActive(false);
+                
                 Main_Game.SetActive(false);
                 StopAllCoroutines();
             }
@@ -428,6 +466,10 @@ public class TurnManager : MonoBehaviour
         }
 
         return null;
+    }
+    private void OnDisable()
+    {
+        transform.DOKill(); 
     }
 
 }

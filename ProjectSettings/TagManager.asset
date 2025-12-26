@@ -42,5 +42,8 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: reward
+    uniqueID: 7219469
+    locked: 0
   m_RenderingLayers:
   - Default

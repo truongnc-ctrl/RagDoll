@@ -22,7 +22,7 @@ public class setting : MonoBehaviour
         button.SetActive(true);
         Debug.Log("đóng setting");
         settingIsOpen = false;
-        Main_Game.SetActive(true);
+        if(Main_Game != null) Main_Game.SetActive(true);
     }
 
 }
