@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class Camera_Shake : MonoBehaviour
 {
@@ -19,22 +20,9 @@ public class Camera_Shake : MonoBehaviour
 
     public void Shake()
     {
-        StartCoroutine(Shake_Coroutine());
+        Camera.main.transform.DOShakePosition(0.5f, 1f);
     }
 
-    IEnumerator Shake_Coroutine()
-    {
-        Vector3 originalPos = transform.localPosition;
-        float elapsedTime = 0.0f;
 
-        while (elapsedTime < duration)
-        {
-            elapsedTime += Time.deltaTime;
-            Vector3 randomPoint = Random.insideUnitCircle * strength;
-            transform.localPosition = originalPos + randomPoint;
-            yield return null;
-        }
-        transform.localPosition = originalPos;
-    }
 
 }

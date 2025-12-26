@@ -5,8 +5,7 @@ public class Camera_shake_settings : MonoBehaviour
 {
     public static Camera_shake_settings instance;
     public bool shake_on = true;
-    public  Image Shake_image_on;
-    public Image Shake_image_off;
+    public  TMPro.TMP_Text Shake_text;
     void Awake()
     {
         if (instance == null)
@@ -52,13 +51,11 @@ public class Camera_shake_settings : MonoBehaviour
     {
         if (shake_on == false)
         {
-            Shake_image_on.enabled = false;
-            Shake_image_off.enabled = true;
+            Shake_text.text = "off";
         }
         else
         {
-            Shake_image_on.enabled = true;
-            Shake_image_off.enabled = false;
+            Shake_text.text = "on";
         }
     }
     private void Load()

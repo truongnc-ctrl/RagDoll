@@ -109,6 +109,7 @@ RectTransform:
   - {fileID: 8645557394692563142}
   - {fileID: 7031707813160410554}
   - {fileID: 8488886367642460706}
+  - {fileID: 5649805007033332426}
   m_Father: {fileID: 737826969313223759}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -504,6 +505,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settting_panel: {fileID: 5022892768056364010}
   button: {fileID: 0}
+  Main_Game: {fileID: 0}
   settingIsOpen: 0
 --- !u!1 &2236530288406752654
 GameObject:
@@ -806,11 +808,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 737826969313223759}
+  m_Father: {fileID: 5309211460236388721}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -268, y: -0.000030517578}
+  m_AnchoredPosition: {x: -604.2822, y: -0.63380426}
   m_SizeDelta: {x: 450, y: 139.0423}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &679664386719789107
@@ -2715,7 +2717,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5649805007033332426}
   - {fileID: 5309211460236388721}
   m_Father: {fileID: 655254219948692415}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

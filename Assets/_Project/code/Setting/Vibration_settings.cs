@@ -6,8 +6,8 @@ public class Vibration_settings : MonoBehaviour
 {
     public static Vibration_settings instance;
     public bool vibration_on = true;
-    public  Image vibration_image_on;
-    public Image vibration_image_off;
+    public  TMPro.TMP_Text vibration_Text;
+
     void Awake()
     {
         if (instance == null)
@@ -54,13 +54,11 @@ public class Vibration_settings : MonoBehaviour
     {
         if (vibration_on == false)
         {
-            vibration_image_on.enabled = false;
-            vibration_image_off.enabled = true;
+            vibration_Text.text = "off";
         }
         else
         {
-            vibration_image_on.enabled = true;
-            vibration_image_off.enabled = false;
+            vibration_Text.text = "on";
         }
     }
     private void Load()
