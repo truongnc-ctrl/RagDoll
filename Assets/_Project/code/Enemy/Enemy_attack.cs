@@ -234,6 +234,7 @@ public class Enemy_attack : MonoBehaviour
         if (currentProjectile != null) Destroy(currentProjectile.gameObject);
         isHoldingProjectile = false;
         isShooting = false;
+
     }
 
     bool IsInLayerMask(int layer, LayerMask mask) { return (mask & (1 << layer)) != 0; }
@@ -264,6 +265,7 @@ void SpawnProjectile()
             newObj.transform.SetParent(spawnPoint);
             currentProjectile = newObj.GetComponent<ProjectileBehavior>();
 
+
             if (currentProjectile != null)
             {
                 currentProjectile.Prepare();
@@ -272,13 +274,13 @@ void SpawnProjectile()
             }
             else
             {
-                Debug.LogError("Prefab trong Weapon SO thiếu script ProjectileBehavior!");
-                Destroy(newObj);
+                // Debug.LogError("Prefab trong Weapon SO thiếu script ProjectileBehavior!");
+                // Destroy(newObj);
             }
         }
         else
         {
-            Debug.LogError("Weapon Data null hoặc chưa gán Prefab trong SO!");
+            Debug.Log("Weapon Data null hoặc chưa gán Prefab trong SO!");
         }
     }
 
@@ -290,6 +292,7 @@ void SpawnProjectile()
         currentProjectile.transform.SetParent(null); 
         currentProjectile.Throw(velocity, colliderDelay);
         currentProjectile = null;
+        Rocket.Instance.hit =true;
     }
 
     private void DrawTrajectory(Vector2 velocity)

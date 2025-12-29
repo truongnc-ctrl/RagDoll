@@ -286,6 +286,7 @@ public class TurnManager : MonoBehaviour
     IEnumerator HandlePlayerTurn()
     {
         if (currentState == GameState.win || currentState == GameState.lose) yield break;
+
         
         currentState = GameState.Processing;
 
@@ -293,6 +294,7 @@ public class TurnManager : MonoBehaviour
         hasCollided = false;
 
         currentState = GameState.PlayerTurn;
+        Random_weapons.Instance.GenerateRandomOptions();
         Turn_text.text = "Player turn";
         Choose_weapon_Tab.Instance.OpenWeaponTab();
     }

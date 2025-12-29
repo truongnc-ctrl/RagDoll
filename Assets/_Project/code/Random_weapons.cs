@@ -3,12 +3,20 @@ using UnityEngine;
 
 public class Random_weapons : MonoBehaviour
 {
+    public static Random_weapons Instance;
     public List<Info_weapon_Tab> Weapon_Tabs; 
-
-    void Start() 
+    void Awake()
     {
-        GenerateRandomOptions();
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
+
 
     public void GenerateRandomOptions()
     {

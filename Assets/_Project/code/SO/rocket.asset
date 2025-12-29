@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e646136f614dece4aa640eaa48cc3bd8, type: 3}
+  m_Name: rocket
+  m_EditorClassIdentifier: 
+  name_weapon: Rocket
+  icon: {fileID: 4871502181275585520, guid: f20c237a0dd2d044ca3572e3ebeac7f4, type: 3}
+  damage: 75
+  currentWeaponType: 2
+  knockbackForce: 30
+  DamageCollisionNade: 0
+  prefabWeapon: {fileID: 2250909442432882078, guid: d48bb5c9e9fab1e449641edbff187665, type: 3}

@@ -103,6 +103,7 @@ public class Line : MonoBehaviour
         {
             HandleInput();
         }
+
     }
 
     void HandleInput()
@@ -144,21 +145,25 @@ public class Line : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0))
         {
+
             if (isHolding)
             {
                 if (lineRenderer.positionCount > 0 && currentProjectile != null)
                 {
                     ReleaseProjectile();
+
                     ClearLine();
                     hasFired = true;
                     if (waitForProjectileRoutine != null) StopCoroutine(waitForProjectileRoutine);
                     waitForProjectileRoutine = StartCoroutine(WaitForFinishThenEndTurn());
+                    if(Rocket.Instance != null) Rocket.Instance.hit =true;
                 }
                 else
                 {
                     CancelShot();
                 }
                 isHolding = false;
+
             }
         }
     }
@@ -209,13 +214,13 @@ public class Line : MonoBehaviour
             }
             else
             {
-                Debug.LogError("Prefab trong Weapon SO thiếu script ProjectileBehavior!");
-                Destroy(newObj);
+                // Debug.LogError("Prefab trong Weapon SO thiếu script ProjectileBehavior!");
+                // Destroy(newObj);
             }
         }
         else
         {
-            Debug.LogError("Weapon Data null hoặc chưa gán Prefab trong SO!");
+            Debug.Log("Weapon Data null hoặc chưa gán Prefab trong SO!");
         }
     }
 
@@ -260,7 +265,7 @@ public class Line : MonoBehaviour
         if (velocity != Vector2.zero)
         {
             float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.AngleAxis(-angle, Vector3.back);
         }
     }
 
