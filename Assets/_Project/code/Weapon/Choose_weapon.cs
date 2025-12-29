@@ -14,25 +14,12 @@ public class Choose_weapon : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    public void SetWeaponIndex(int newIndex)
-    {
-        if (newIndex >= 0 && newIndex < weaponList.Count)
-        {
-            Index = newIndex;
-            Debug.Log($"Đã chọn vũ khí: {weaponList[Index].name_weapon}");
-            
-        }
-
-    }
-
     public Weapon GetCurrentWeaponData()
     {
         if (Index >= 0 && Index < weaponList.Count)
         {
             return weaponList[Index];
         }
-        
-        Debug.LogError("Weapon Index : " + Index);
         if (weaponList.Count > 0) return weaponList[0]; 
         return null;
     }
@@ -43,9 +30,27 @@ public class Choose_weapon : MonoBehaviour
             int i = Random.Range(0, weaponList.Count);
             return weaponList[i];
         }
-        
-        Debug.LogError("Weapon Index : " + Index);
         if (weaponList.Count > 0) return weaponList[0]; 
         return null;
+    }
+    public List<int> RandomWeaponPlayer(int count)
+    {
+        List<int> result = new List<int>();
+
+        if (count >= weaponList.Count) 
+        {
+            for(int i = 0; i < weaponList.Count; i++) result.Add(i);
+            return result;
+        }
+        while (result.Count < count)
+        {
+            int r = Random.Range(0, weaponList.Count);
+            if (!result.Contains(r)) 
+            {
+                result.Add(r);
+            }
+        }
+
+        return result;
     }
 }

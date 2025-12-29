@@ -20,9 +20,9 @@ public class Camera_shake_settings : MonoBehaviour
     }
     void Start()
     {
-        if(!PlayerPrefs.HasKey("vibration_on"))
+        if(!PlayerPrefs.HasKey("shake_on"))
         {
-            PlayerPrefs.SetInt("vibration_on", 0);
+            PlayerPrefs.SetInt("shake_on", 1);
             Load();
         }
         else

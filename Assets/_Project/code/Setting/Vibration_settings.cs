@@ -24,7 +24,7 @@ public class Vibration_settings : MonoBehaviour
     {
         if(!PlayerPrefs.HasKey("vibration_on"))
         {
-            PlayerPrefs.SetInt("vibration_on", 0);
+            PlayerPrefs.SetInt("vibration_on", 1);
             Load();
         }
         else
@@ -36,7 +36,6 @@ public class Vibration_settings : MonoBehaviour
 
     public void OnButtonPress()
     {
-        Debug.Log("Vibration button pressed");
         if (vibration_on == false)
         {
             vibration_on = true;

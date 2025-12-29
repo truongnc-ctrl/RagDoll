@@ -20,9 +20,9 @@ public class Music_settings : MonoBehaviour
     }
     void Start()
     {
-        if(!PlayerPrefs.HasKey("vibration_on"))
+        if(!PlayerPrefs.HasKey("music_on"))
         {
-            PlayerPrefs.SetInt("vibration_on", 0);
+            PlayerPrefs.SetInt("music_on", 1);
             Load();
         }
         else
@@ -35,7 +35,6 @@ public class Music_settings : MonoBehaviour
 
     public void OnButtonPress()
     {
-        Debug.Log("Vibration button pressed");
         if (music_on.activeSelf == false)
         {
             music_on.SetActive(true);
