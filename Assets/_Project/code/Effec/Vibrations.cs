@@ -14,7 +14,6 @@ public class Vibrations : MonoBehaviour
         if (_health != null && _health.currentHealth > 0)
         {
             Lofelt.NiceVibrations.HapticPatterns.PlayPreset(Lofelt.NiceVibrations.HapticPatterns.PresetType.LightImpact);
-            Debug.Log("Light Vibration Triggered");
         }
     }
 

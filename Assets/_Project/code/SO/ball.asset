@@ -16,6 +16,6 @@ MonoBehaviour:
   icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   damage: 10
   currentWeaponType: 0
-  knockbackForce: 5
+  knockbackForce: 20
   DamageCollisionNade: 0
   prefabWeapon: {fileID: 4194196158553464265, guid: 7a0539156c6edcb4bbb55010d1bcc152, type: 3}

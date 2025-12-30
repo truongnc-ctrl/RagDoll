@@ -76,9 +76,6 @@ public class Enemy_attack : MonoBehaviour
     public void ForceDeath()
     {
         if (IsDead) return;
-
-
-        
         IsDead = true; 
         if(ragdollReset != null) ragdollReset.isDead = true; 
         StopAllCoroutines();
@@ -99,8 +96,6 @@ public class Enemy_attack : MonoBehaviour
                 }
             }
         }
-        Debug.Log(name + " died ");
-
 
 
     }
@@ -251,7 +246,7 @@ public class Enemy_attack : MonoBehaviour
         return direction.normalized * power;
     }
 
-void SpawnProjectile()
+    void SpawnProjectile()
     {
         if (Choose_weapon.Instance == null) return;
         TurnManager.Instance.hasCollided = false;
@@ -260,28 +255,18 @@ void SpawnProjectile()
 
         if (weaponData != null && weaponData.prefabWeapon != null)
         {
-
             GameObject newObj = Instantiate(weaponData.prefabWeapon, spawnPoint.position, Quaternion.identity);
             newObj.transform.SetParent(spawnPoint);
+            newObj.transform.localRotation = Quaternion.identity;
+            newObj.transform.localScale = new Vector3(newObj.transform.localScale.x, -newObj.transform.localScale.y, newObj.transform.localScale.z); 
             currentProjectile = newObj.GetComponent<ProjectileBehavior>();
-
-
             if (currentProjectile != null)
             {
                 currentProjectile.Prepare();
                 currentProjectile.gameObject.SetActive(false);
-                Debug.Log("Spawned weapon: " + weaponData.name_weapon);
-            }
-            else
-            {
-                // Debug.LogError("Prefab trong Weapon SO thiếu script ProjectileBehavior!");
-                // Destroy(newObj);
             }
         }
-        else
-        {
-            Debug.Log("Weapon Data null hoặc chưa gán Prefab trong SO!");
-        }
+
     }
 
     void ReleaseProjectile(Vector2 velocity)
@@ -292,14 +277,12 @@ void SpawnProjectile()
         currentProjectile.transform.SetParent(null); 
         currentProjectile.Throw(velocity, colliderDelay);
         currentProjectile = null;
-        Rocket.Instance.hit =true;
+        if(Rocket.Instance != null )Rocket.Instance.hit =true;
     }
 
     private void DrawTrajectory(Vector2 velocity)
     {
         if (lineRenderer == null) return;
-
-        // Show the projectile in hand while aiming (same as player behavior).
         if (currentProjectile != null && !currentProjectile.gameObject.activeSelf)
         {
             currentProjectile.gameObject.SetActive(true);

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name_weapon: Rocket
   icon: {fileID: 4871502181275585520, guid: f20c237a0dd2d044ca3572e3ebeac7f4, type: 3}
-  damage: 75
+  damage: 100
   currentWeaponType: 2
-  knockbackForce: 30
-  DamageCollisionNade: 0
+  knockbackForce: 80
+  DamageCollisionNade: 10
   prefabWeapon: {fileID: 2250909442432882078, guid: d48bb5c9e9fab1e449641edbff187665, type: 3}

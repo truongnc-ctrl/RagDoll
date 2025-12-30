@@ -19,7 +19,6 @@ public class Bomb : MonoBehaviour
     void Start()
     {
         weaponInfo = GetComponent<WeaponInfo>();
-        if (weaponInfo == null) Debug.LogError("Missing WeaponInfo on Bomb");
     }
 
     public void Arm()
@@ -94,13 +93,6 @@ public class Bomb : MonoBehaviour
                         hitScript.ReceiveImpact(finalDamage, forceToApply, pushDirection, obj.transform);
                         damagedVictims.Add(hitScript);
                     }
-                }
-                else
-                {
-                    IDamageable targetHealth = obj.GetComponent<IDamageable>();
-                    if (targetHealth != null) targetHealth.TakeDamage(finalDamage);
-                    Rigidbody2D rb = obj.GetComponent<Rigidbody2D>();
-                    if (rb != null) rb.AddForce(pushDirection * finalForce, ForceMode2D.Impulse);
                 }
             }
         }

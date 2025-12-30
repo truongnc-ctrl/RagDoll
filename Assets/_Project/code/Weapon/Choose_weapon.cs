@@ -28,7 +28,7 @@ public class Choose_weapon : MonoBehaviour
         if (Index >= 0 && Index < weaponList.Count)
         {
             int i = Random.Range(0, weaponList.Count);
-            return weaponList[4];
+            return weaponList[i];
         }
 
         if (weaponList.Count > 0) return weaponList[0]; 

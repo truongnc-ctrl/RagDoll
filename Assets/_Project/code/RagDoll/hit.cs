@@ -60,7 +60,7 @@ public class hit : MonoBehaviour
             {
                 if (part.bone.GetComponent<Collider2D>() == null)
                 {
-                    Debug.LogWarning($"Cảnh báo: Xương {part.namePart} chưa có Collider2D! Nó sẽ không nhận được va chạm.");
+                    return;
                 }
                 BodyPartHit partHit = part.bone.GetComponent<BodyPartHit>();
                 if (partHit == null)
@@ -159,11 +159,11 @@ public class hit : MonoBehaviour
         {
             _health.TakeDamage(damage);
         }
-        else
-        {
-            IDamageable damageable = GetComponent<IDamageable>();
-            if (damageable != null) damageable.TakeDamage(damage);
-        }
+        // else
+        // {
+        //     IDamageable damageable = GetComponent<IDamageable>();
+        //     if (damageable != null) damageable.TakeDamage(damage);
+        // }
 
         if (damage >= damageThresholdToRagdoll || knockback >= minKnockbackForce)
         {

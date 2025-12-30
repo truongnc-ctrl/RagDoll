@@ -24,7 +24,6 @@ public class Info_weapon_Tab : MonoBehaviour
         if (Choose_weapon.Instance != null)
         {
             Choose_weapon.Instance.Index = Index_weapon;
-            Debug.Log("vũ khí " + Index_weapon);
         }
     }
 }

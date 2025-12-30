@@ -196,26 +196,18 @@ public class Line : MonoBehaviour
         if (Choose_weapon.Instance == null) return;
         TurnManager.Instance.hasCollided = false;
 
-
         Weapon weaponData = Choose_weapon.Instance.GetCurrentWeaponData();
 
         if (weaponData != null && weaponData.prefabWeapon != null)
         {
-
             GameObject newObj = Instantiate(weaponData.prefabWeapon, spawnPoint.position, Quaternion.identity);
             newObj.transform.SetParent(spawnPoint);
+            newObj.transform.localRotation = Quaternion.identity; 
             currentProjectile = newObj.GetComponent<ProjectileBehavior>();
-
             if (currentProjectile != null)
             {
                 currentProjectile.Prepare();
                 currentProjectile.gameObject.SetActive(false);
-                Debug.Log("Spawned weapon: " + weaponData.name_weapon);
-            }
-            else
-            {
-                // Debug.LogError("Prefab trong Weapon SO thiếu script ProjectileBehavior!");
-                // Destroy(newObj);
             }
         }
         else
@@ -266,6 +258,10 @@ public class Line : MonoBehaviour
         {
             float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(-angle, Vector3.back);
+            if (currentProjectile != null)
+            {
+                currentProjectile.transform.rotation = Quaternion.identity;
+            }
         }
     }
 

@@ -111,7 +111,6 @@ public class TurnManager : MonoBehaviour
     public void RegisterEnemy(Enemy_attack enemy)
     {
         if (!livingEnemies.Contains(enemy) ) livingEnemies.Add(enemy);
-        Debug.Log(enemy + "add");
     }
 
     public void UnregisterEnemy(Enemy_attack enemy)
@@ -147,7 +146,6 @@ public class TurnManager : MonoBehaviour
             }
         }
 
-        Debug.Log(enemy + "remove");
 
         if (livingEnemies.Count == 0 )
         {

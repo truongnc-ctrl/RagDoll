@@ -36,6 +36,7 @@ MonoBehaviour:
     assemblyNames:
     - Assembly-CSharp
     - Assembly-CSharp-firstpass
+    - DamageNumbersPro
     - IngameDebugConsole.Runtime
     - Lofelt.NiceVibrations
     - Lofelt.NiceVibrations.Demo

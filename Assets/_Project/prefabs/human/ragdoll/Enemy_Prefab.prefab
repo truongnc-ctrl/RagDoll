@@ -1187,6 +1187,14 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: -0.78700066
       objectReference: {fileID: 0}
+    - target: {fileID: 6266498163875828955, guid: 0409ec5d33ae37d4e9fdb1effeddfabc, type: 3}
+      propertyPath: numberPrefab
+      value: 
+      objectReference: {fileID: 680919055205168836, guid: 7b457cb2325f32940a23e90b332f8632, type: 3}
+    - target: {fileID: 6266498163875828955, guid: 0409ec5d33ae37d4e9fdb1effeddfabc, type: 3}
+      propertyPath: followtransform
+      value: 
+      objectReference: {fileID: 791374751293964924}
     - target: {fileID: 6366484966849711128, guid: 0409ec5d33ae37d4e9fdb1effeddfabc, type: 3}
       propertyPath: m_Layer
       value: 11
@@ -1345,7 +1353,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8872854199298737633, guid: 0409ec5d33ae37d4e9fdb1effeddfabc, type: 3}
       propertyPath: m_LocalScale.y
-      value: -1
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872854199298737633, guid: 0409ec5d33ae37d4e9fdb1effeddfabc, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8872854199298737633, guid: 0409ec5d33ae37d4e9fdb1effeddfabc, type: 3}
       propertyPath: m_LocalPosition.x

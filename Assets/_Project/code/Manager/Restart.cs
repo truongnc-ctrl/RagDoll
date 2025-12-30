@@ -6,8 +6,8 @@ public class Restart : MonoBehaviour
     public void RestartGame()
     {
         DOTween.KillAll();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        
-        Time.timeScale = 1;
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        AsyncOperation operation = SceneManager.LoadSceneAsync(0);
+        Sence_Manager.Instance.Sence_index = currentSceneIndex;
     }
 }

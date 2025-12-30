@@ -5,13 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class ASynceLoad : MonoBehaviour
 {
-    [Header("Menu Scene")]
     [SerializeField] private GameObject Loading_screen_menu;
     [SerializeField] private GameObject Main_menu_UI;
     [SerializeField] private Slider loading_slider_menu;
+    private int Scene ;
+
     void Start()
     {
-        LoadLevelBtn(1);
+        Scene = Sence_Manager.Instance.Sence_index;
+        if(Scene > 3)
+        {
+            Scene = 1;
+        }
+        LoadLevelBtn(Scene);
     }
 
     public void LoadLevelBtn(int SceneId)
