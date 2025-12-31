@@ -237,7 +237,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2183128634595516572, guid: b849cf73d9d8c814680ade55a081d8a5, type: 3}
       propertyPath: Map.Array.size
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2183128634595516572, guid: b849cf73d9d8c814680ade55a081d8a5, type: 3}
       propertyPath: 'Map.Array.data[0]'
@@ -246,7 +246,7 @@ PrefabInstance:
     - target: {fileID: 2183128634595516572, guid: b849cf73d9d8c814680ade55a081d8a5, type: 3}
       propertyPath: 'Map.Array.data[1]'
       value: 
-      objectReference: {fileID: 5888547120022443605, guid: dfcf1c7918389d64a81e6255fd5a2820, type: 3}
+      objectReference: {fileID: 5888547120022443605, guid: e1d3f1eb0397ff34481b04425bf76de2, type: 3}
     - target: {fileID: 2183128634595516572, guid: b849cf73d9d8c814680ade55a081d8a5, type: 3}
       propertyPath: 'Map.Array.data[2]'
       value: 

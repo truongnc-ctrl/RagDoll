@@ -5,6 +5,7 @@ using TMPro;
 using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public enum GameState
 {
@@ -38,7 +39,7 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private GameObject Main_Game;
 
     [Header("Prefab")]
-    [SerializeField] private GameObject[] Map;
+    [SerializeField] List<GameObject> Map = new List<GameObject>();
     private List<Enemy_attack> livingEnemies = new List<Enemy_attack>();
     public bool IsPlayerTurn => currentState == GameState.PlayerTurn;
     public bool IsProcess => currentState == GameState.Processing;
@@ -84,7 +85,8 @@ public class TurnManager : MonoBehaviour
         Application.targetFrameRate = 60;
         if(livingEnemies.Count == 0 & line == null)
         {
-            if(Sence_Manager.Instance  != null)
+            Debug.Log(Map.Count);
+            if(Sence_Manager.Instance  != null )
             {
                 int Index_map = Sence_Manager.Instance.Sence_index;
                 Instantiate(Map[Index_map-1]);
