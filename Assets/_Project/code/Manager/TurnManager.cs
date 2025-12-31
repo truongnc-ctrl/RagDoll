@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using DG.Tweening;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -23,6 +24,7 @@ public class TurnManager : MonoBehaviour
 
     [Header("Settings")]
     public GameState currentState;
+    [SerializeField] private int Test;
 
     [Header("Layer Config")]
     public LayerMask playerLayer;
@@ -35,6 +37,8 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private GameObject Weapon_Tab;
     [SerializeField] private GameObject Main_Game;
 
+    [Header("Prefab")]
+    [SerializeField] private GameObject[] Map;
     private List<Enemy_attack> livingEnemies = new List<Enemy_attack>();
     public bool IsPlayerTurn => currentState == GameState.PlayerTurn;
     public bool IsProcess => currentState == GameState.Processing;
@@ -78,13 +82,26 @@ public class TurnManager : MonoBehaviour
         win.gameObject.SetActive(false);
         if (Main_Game) Main_Game.SetActive(true);
         Application.targetFrameRate = 60;
+        if(livingEnemies.Count == 0 & line == null)
+        {
+            if(Sence_Manager.Instance  != null)
+            {
+                int Index_map = Sence_Manager.Instance.Sence_index;
+                Instantiate(Map[Index_map-1]);
+                Debug.Log(Index_map);
+                
+            }
+        }
     }
 
     void Start()
     {
         Application.targetFrameRate = 60;
         StartCoroutine(StartGameRoutine());
+
+
     }
+
     private void OnApplicationQuit()
     {
         isApplicationQuitting = true;

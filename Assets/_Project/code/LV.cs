@@ -6,6 +6,6 @@ public class LV : MonoBehaviour
     [SerializeField] private TMP_Text lv;
     void Start()
     {
-        lv.text = Sence_Manager.Instance.Sence_index.ToString();
+        if(Sence_Manager.Instance != null) lv.text = Sence_Manager.Instance.Sence_index.ToString();
     }
 }

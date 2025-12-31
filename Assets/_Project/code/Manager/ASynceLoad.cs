@@ -12,12 +12,7 @@ public class ASynceLoad : MonoBehaviour
 
     void Start()
     {
-        Scene = Sence_Manager.Instance.Sence_index;
-        if(Scene > 3)
-        {
-            Scene = 1;
-        }
-        LoadLevelBtn(Scene);
+        LoadLevelBtn(1);
     }
 
     public void LoadLevelBtn(int SceneId)

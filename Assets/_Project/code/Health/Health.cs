@@ -45,7 +45,7 @@ public class Health : MonoBehaviour, IDamageable
         if (isDead) return;
         currentHealth -= amount;
         Ouch_sound_enemy.Instance.PlayOuchSound(); 
-        if(amount > 0)
+        if(amount > 1)
         {
             TotalDamage += amount;
             if (CaculatorDamage == null)

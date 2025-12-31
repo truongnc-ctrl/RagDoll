@@ -2400,6 +2400,7 @@ MonoBehaviour:
   standUpDuration: 1
   collapseForce: 5
   isDead: 0
+  isFalling: 0
 --- !u!114 &7078342102589098129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3029,6 +3030,7 @@ GameObject:
   - component: {fileID: 8122168393753369119}
   - component: {fileID: 3104830176308184285}
   - component: {fileID: 3409606271495696065}
+  - component: {fileID: 6530584248410566328}
   m_Layer: 3
   m_Name: f_foot
   m_TagString: Untagged
@@ -3220,6 +3222,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.55, y: 0.2}
   m_EdgeRadius: 0
+--- !u!114 &6530584248410566328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6112091985803615421}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b414e355c7bfa954fa1abdf19517ebf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forceThreshold: 12
 --- !u!1 &6136727272238841409
 GameObject:
   m_ObjectHideFlags: 0

@@ -24,7 +24,7 @@ public class RagdollReset : MonoBehaviour
     
     public bool isDead  = false;
 
-    private bool isFalling = false;
+    public bool isFalling = false;
 
 
     void Awake()
