@@ -5,8 +5,14 @@ public class Next_Sence : MonoBehaviour
 {
     public void Next_Sences()
     {
-        AsyncOperation operation = SceneManager.LoadSceneAsync(1);
-        Sence_Manager.Instance.Sence_index +=1;
+        int currentLevel = PlayerPrefs.GetInt("Level", 1);
+        currentLevel++;
+        PlayerPrefs.SetInt("Level", currentLevel);
+        PlayerPrefs.Save();
+        if (Sence_Manager.Instance != null)
+        {
+            Sence_Manager.Instance.Sence_index = currentLevel;
+        }
+        SceneManager.LoadSceneAsync(1); 
     }
-
 }

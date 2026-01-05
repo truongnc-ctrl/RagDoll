@@ -20,6 +20,6 @@ public class Sence_Manager : MonoBehaviour
     {
         DontDestroyOnLoad(this.gameObject);
     }
-
+ 
 
 }

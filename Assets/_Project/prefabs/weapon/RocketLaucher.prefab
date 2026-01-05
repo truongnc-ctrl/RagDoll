@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 223746481927188685}
   - component: {fileID: 2776192741664395172}
   m_Layer: 7
-  m_Name: Image
+  m_Name: rocket
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -245,10 +245,10 @@ GameObject:
   - component: {fileID: 5189619453730162464}
   - component: {fileID: 5215321121456015579}
   - component: {fileID: 2150692779638697699}
-  - component: {fileID: 8864936506224477949}
   - component: {fileID: 2430576800223482306}
   - component: {fileID: -5064315720449959698}
   - component: {fileID: 6200755313744172406}
+  - component: {fileID: 1480841306351955450}
   m_Layer: 7
   m_Name: RocketLaucher
   m_TagString: Untagged
@@ -289,6 +289,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   laucher: {fileID: 9006494763458278960}
   laucher_rb: {fileID: 8767967823714543679}
+  Rocker_rb: {fileID: 1480841306351955450}
+  Explode: {fileID: 2150692779638697699}
+  col: {fileID: 6200755313744172406}
   hit: 0
 --- !u!114 &5215321121456015579
 MonoBehaviour:
@@ -320,34 +323,7 @@ MonoBehaviour:
   explosionEffect: {fileID: 4449998724552722542}
   layerMask:
     serializedVersion: 2
-    m_Bits: 3912
---- !u!50 &8864936506224477949
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2250909442432882078}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 30
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+    m_Bits: 4095
 --- !u!114 &2430576800223482306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -418,6 +394,33 @@ CapsuleCollider2D:
   m_Offset: {x: 1.53, y: -0.03}
   m_Size: {x: 2.37, y: 0.61}
   m_Direction: 1
+--- !u!50 &1480841306351955450
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2250909442432882078}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 30
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1001 &1517799227174968109
 PrefabInstance:
   m_ObjectHideFlags: 0

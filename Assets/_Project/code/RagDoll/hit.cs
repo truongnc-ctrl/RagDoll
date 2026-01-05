@@ -42,7 +42,7 @@ public class hit : MonoBehaviour
         if (line != null)
         {
             maxDamageVelocity = line.maxPower;
-            minDamageVelocity = maxDamageVelocity * 0.1f;
+            minDamageVelocity = maxDamageVelocity * 0.3f;
         }
         else
         {
@@ -175,6 +175,7 @@ public class hit : MonoBehaviour
             }
 
             Rigidbody2D targetRb = null;
+        
             if (hitBone != null) targetRb = hitBone.GetComponent<Rigidbody2D>();
             
             if (targetRb == null) targetRb = hipsRigidbody;

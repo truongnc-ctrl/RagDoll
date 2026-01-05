@@ -3030,7 +3030,7 @@ GameObject:
   - component: {fileID: 8122168393753369119}
   - component: {fileID: 3104830176308184285}
   - component: {fileID: 3409606271495696065}
-  - component: {fileID: 6530584248410566328}
+  - component: {fileID: 4465121468848173526}
   m_Layer: 3
   m_Name: f_foot
   m_TagString: Untagged
@@ -3222,19 +3222,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.55, y: 0.2}
   m_EdgeRadius: 0
---- !u!114 &6530584248410566328
+--- !u!114 &4465121468848173526
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6112091985803615421}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b414e355c7bfa954fa1abdf19517ebf6, type: 3}
+  m_Script: {fileID: 11500000, guid: 63e5e7a970ecb114ca5419fee7d90e0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceThreshold: 12
+  ragdollReset: {fileID: 9130755980456237698}
+  rb: {fileID: 8323912389840277352}
+  col: {fileID: 3409606271495696065}
+  forceThreshold: 13
 --- !u!1 &6136727272238841409
 GameObject:
   m_ObjectHideFlags: 0
@@ -3553,6 +3556,7 @@ GameObject:
   - component: {fileID: 8751594198013535677}
   - component: {fileID: 8210746250581419131}
   - component: {fileID: 6482399062409351}
+  - component: {fileID: 6706133697816378597}
   m_Layer: 3
   m_Name: b_foot
   m_TagString: Untagged
@@ -3744,6 +3748,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.55, y: 0.2}
   m_EdgeRadius: 0
+--- !u!114 &6706133697816378597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7965839772772470978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63e5e7a970ecb114ca5419fee7d90e0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ragdollReset: {fileID: 9130755980456237698}
+  rb: {fileID: 3583697862239668116}
+  col: {fileID: 6482399062409351}
+  forceThreshold: 13
 --- !u!1 &7975800889215338928
 GameObject:
   m_ObjectHideFlags: 0

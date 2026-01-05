@@ -40,6 +40,7 @@ public class TurnManager : MonoBehaviour
 
     [Header("Prefab")]
     [SerializeField] List<GameObject> Map = new List<GameObject>();
+    public int MapCount => Map?.Count ?? 0;
     private List<Enemy_attack> livingEnemies = new List<Enemy_attack>();
     public bool IsPlayerTurn => currentState == GameState.PlayerTurn;
     public bool IsProcess => currentState == GameState.Processing;
@@ -78,20 +79,35 @@ public class TurnManager : MonoBehaviour
     void Awake()
     {
         if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        else 
+        {
+            Destroy(gameObject);
+            return; 
+        }
         lose.gameObject.SetActive(false);
         win.gameObject.SetActive(false);
         if (Main_Game) Main_Game.SetActive(true);
         Application.targetFrameRate = 60;
-        if(livingEnemies.Count == 0 & line == null)
+        if (!PlayerPrefs.HasKey("Level"))
         {
-            Debug.Log(Map.Count);
-            if(Sence_Manager.Instance  != null )
+            PlayerPrefs.SetInt("Level", 1);
+            PlayerPrefs.Save();
+        }
+        int currentLevel = PlayerPrefs.GetInt("Level", 1);
+        if (Sence_Manager.Instance != null)
+        {
+            Sence_Manager.Instance.Sence_index = currentLevel;
+        }
+        if (livingEnemies.Count == 0 && line == null)
+        {
+            if (Map != null && Map.Count > 0)
             {
-                int Index_map = Sence_Manager.Instance.Sence_index;
-                Instantiate(Map[Index_map-1]);
-                Debug.Log(Index_map);
-                
+                int mapIndex = (currentLevel - 1) % Map.Count;
+                GameObject mapPrefab = Map[mapIndex];
+                if (mapPrefab != null)
+                {
+                    Instantiate(mapPrefab);
+                }
             }
         }
     }

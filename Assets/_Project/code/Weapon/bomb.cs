@@ -31,72 +31,56 @@ public class Bomb : MonoBehaviour
 
     public void Explode()
     {
-        if (exploded || weaponInfo == null || weaponInfo._weapon == null) return;
+        if (exploded || weaponInfo?._weapon == null) return;
         exploded = true;
         if (explosionEffect != null)
         {
             explosionEffect.transform.SetParent(null);
             explosionEffect.Play();
-            explosionEffect.Play();
-            
             Destroy(explosionEffect.gameObject, explosionEffect.main.duration);
         }
-        if (Bomb_Sound.Instance != null)
-        {
-            Bomb_Sound.Instance.PlayExplosionSound();
-        }
-        if (Camera_Shake.Instance != null  && Camera_shake_settings.instance.shake_on == true) Camera_Shake.Instance.Shake();
+        Bomb_Sound.Instance?.PlayExplosionSound();
+        if (Camera_shake_settings.instance.shake_on) Camera_Shake.Instance?.Shake();
+        if (TurnManager.Instance != null) TurnManager.Instance.Finish_turn = true;
 
-        if (TurnManager.Instance != null)
-        {
-            TurnManager.Instance.Finish_turn = true;
-        }
-
-        float maxDamage = weaponInfo._weapon.damage; 
+        float maxDamage = weaponInfo._weapon.damage;
         float maxKnockback = weaponInfo._weapon.knockbackForce;
-        Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position, fieldOfImpact, layerMask);
+        Vector3 explosionPos = transform.position;
 
+        Collider2D[] objects = Physics2D.OverlapCircleAll(explosionPos, fieldOfImpact, layerMask);
         HashSet<hit> damagedVictims = new HashSet<hit>();
 
         foreach (Collider2D obj in objects)
         {
-            Vector2 directionVector = obj.transform.position - transform.position;
-            float distance = directionVector.magnitude;
-            float proximity = Mathf.Clamp01(1 - (distance / fieldOfImpact)); 
+            Rigidbody2D rb = obj.attachedRigidbody;
+            Vector2 direction = obj.transform.position - explosionPos;
+            float distance = direction.magnitude;
 
+            // Tính tỉ lệ lực theo khoảng cách (Gần = 1, Xa = 0)
+            float proximity = Mathf.Clamp01(1 - (distance / fieldOfImpact));
+            
             float finalDamage = maxDamage * proximity;
             float finalForce = maxKnockback * proximity;
-            Vector2 pushDirection = directionVector.normalized;
+            Vector2 pushDir = direction.normalized;
 
-            BodyPartHit partHit = obj.GetComponent<BodyPartHit>();
-            
-            if (partHit != null && partHit.mainScript != null)
+            if (obj.TryGetComponent<BodyPartHit>(out var partHit) && partHit.mainScript != null)
             {
-                float damageToApply = 0f;
+                float damageToApply = damagedVictims.Contains(partHit.mainScript) ? 0f : finalDamage;
                 float forceToApply = Mathf.Max(finalForce, partHit.mainScript.minKnockbackForce);
-                
-                if (!damagedVictims.Contains(partHit.mainScript))
-                {
-                    damageToApply = finalDamage;
-                    damagedVictims.Add(partHit.mainScript);
-                }
-                partHit.mainScript.ReceiveImpact(damageToApply, forceToApply, pushDirection, partHit.transform);
+                partHit.mainScript.ReceiveImpact(damageToApply, forceToApply, pushDir, partHit.transform);
+                damagedVictims.Add(partHit.mainScript);
             }
-            else
+            else if (obj.TryGetComponent<hit>(out var hitScript))
             {
-                hit hitScript = obj.GetComponent<hit>();
-                if (hitScript != null)
+                if (!damagedVictims.Contains(hitScript))
                 {
                     float forceToApply = Mathf.Max(finalForce, hitScript.minKnockbackForce);
-                    if (!damagedVictims.Contains(hitScript))
-                    {
-                        hitScript.ReceiveImpact(finalDamage, forceToApply, pushDirection, obj.transform);
-                        damagedVictims.Add(hitScript);
-                    }
+                    hitScript.ReceiveImpact(finalDamage, forceToApply, pushDir, obj.transform);
+                    damagedVictims.Add(hitScript);
                 }
             }
-        }
 
+        }
         Destroy(gameObject);
     }
 

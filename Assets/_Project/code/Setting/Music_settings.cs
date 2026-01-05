@@ -31,6 +31,7 @@ public class Music_settings : MonoBehaviour
         }
         music_on.SetActive(PlayerPrefs.GetInt("music_on") == 1);
         UpdateButtonIcon();
+        ApplyGlobalAudio();
     }
 
     public void OnButtonPress()
@@ -46,7 +47,15 @@ public class Music_settings : MonoBehaviour
             UpdateButtonIcon();
         }
         Save();
+        ApplyGlobalAudio();
         
+    }
+
+    private void ApplyGlobalAudio()
+    {
+        bool isOn = music_on != null && music_on.activeSelf;
+        AudioListener.volume = isOn ? 1f : 0f;
+        AudioListener.pause = !isOn;
     }
     private void UpdateButtonIcon()
     {

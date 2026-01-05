@@ -7,10 +7,12 @@ public class Rocket : MonoBehaviour
     public static Rocket Instance;
     [SerializeField] private SpriteRenderer laucher;
     [SerializeField] private Rigidbody2D laucher_rb;
-    private Bomb Explode;
+    [SerializeField] private Rigidbody2D Rocker_rb;
+    [SerializeField]private Bomb Explode;
+    [SerializeField] private Collider2D col;
     public bool hit = false;
-    Collider2D col;
-    Rigidbody2D rb;
+
+
     void Awake()
     {
         if (Instance == null)
@@ -23,13 +25,6 @@ public class Rocket : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        Explode = GetComponent<Bomb>();
-        col = GetComponent<Collider2D>();
-        rb = GetComponent<Rigidbody2D>();
-    
-    }
     void OnCollisionEnter2D(Collision2D collision)
     {
         Explode.Explode();
@@ -39,9 +34,9 @@ public class Rocket : MonoBehaviour
         if(hit == true)
         {
             laucher_rb.simulated =true;
-           if (rb.linearVelocity.sqrMagnitude > 0.1f) 
+           if (Rocker_rb.linearVelocity.sqrMagnitude > 0.1f) 
             {
-                float angle = Mathf.Atan2(rb.linearVelocity.y, rb.linearVelocity.x) * Mathf.Rad2Deg;
+                float angle = Mathf.Atan2(Rocker_rb.linearVelocity.y, Rocker_rb.linearVelocity.x) * Mathf.Rad2Deg;
                 transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             }
             
@@ -49,7 +44,7 @@ public class Rocket : MonoBehaviour
     }
     private IEnumerator DestroyLaucher()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         Destroy(laucher_rb.gameObject);
     }
 
