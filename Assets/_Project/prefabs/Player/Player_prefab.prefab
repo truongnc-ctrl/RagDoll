@@ -2362,6 +2362,10 @@ MonoBehaviour:
   - namePart: 
     bone: {fileID: 5916554554047861439}
     multiplier: 1
+  _health: {fileID: 176539458277856022}
+  ragdollReset: {fileID: 9130755980456237698}
+  mainRb: {fileID: 5588337322155671183}
+  line: {fileID: 6979038112324362884}
   hipsRigidbody: {fileID: 5588337322155671183}
   damageThresholdToRagdoll: 20
   minKnockbackForce: 5

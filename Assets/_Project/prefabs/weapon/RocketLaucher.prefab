@@ -318,7 +318,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d75cd68d83f602e48a3758c0a5024015, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fieldOfImpact: 4
+  fieldOfImpact: 7
   waitTime: 10
   explosionEffect: {fileID: 4449998724552722542}
   layerMask:

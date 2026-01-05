@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DamageNumbersPro;
 
-public class Health : MonoBehaviour, IDamageable
+public class Health : MonoBehaviour
 {
     [SerializeField] private HealthBar healthBar;
     [SerializeField] private GameObject followtransform;
@@ -18,8 +18,8 @@ public class Health : MonoBehaviour, IDamageable
     public Vibrations vibrations;
     public DamageNumber numberPrefab;
     private bool isDead = false;
-    private float TotalDamage = 0f; 
-    private Coroutine CaculatorDamage; 
+    private float _accumulatedDamage = 0f;
+    private Coroutine _damageDisplayCoroutine; 
 
     void OnEnable()
     {
@@ -44,39 +44,38 @@ public class Health : MonoBehaviour, IDamageable
     {
         if (isDead) return;
         currentHealth -= amount;
-        Ouch_sound_enemy.Instance.PlayOuchSound(); 
-        if(amount > 1)
-        {
-            TotalDamage += amount;
-            if (CaculatorDamage == null)
-            {
-                CaculatorDamage = StartCoroutine(ShowBatchedDamage());
-            }
-        }
+        _accumulatedDamage += amount;
+        Ouch_sound_enemy.Instance.PlayOuchSound();
         if (vibrations != null && Vibration_settings.instance.vibration_on == true)
         {
             vibrations.LightVibration();
         }
+
         if (currentHealth < 0) currentHealth = 0;
         if (healthBar != null) healthBar.UpdateHealthUI(currentHealth);
+        if (_damageDisplayCoroutine == null)
+        {
+            _damageDisplayCoroutine = StartCoroutine(DisplayDamageBatch());
+        }
+
         if (currentHealth <= 0) Die();
     }
 
-    private IEnumerator ShowBatchedDamage()
+    private IEnumerator DisplayDamageBatch()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForEndOfFrame();
 
-        if (TotalDamage > 0)
+        if (_accumulatedDamage > 1)
         {
-            DamageNumber damageNumber = numberPrefab.Spawn(followtransform.transform.position + Vector3.up * 5f, TotalDamage,followtransform.transform);
+            DamageNumber damageNumber = numberPrefab.Spawn(followtransform.transform.position + Vector3.up * 5f, _accumulatedDamage, followtransform.transform);
         }
-
-        TotalDamage = 0f;
-        CaculatorDamage = null;
+        _accumulatedDamage = 0f;
+        _damageDisplayCoroutine = null;
     }
 
     private void Die()
     {
+        if (isDead) return; 
         isDead = true;
         OnDeath?.Invoke(); 
     }

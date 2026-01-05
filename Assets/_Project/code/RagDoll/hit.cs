@@ -6,7 +6,6 @@ public class hit : MonoBehaviour
     [System.Serializable]
     public class BoneProfile
     {
-        public string namePart;
         public Transform bone;
         public float multiplier = 1f;
     }
@@ -15,40 +14,21 @@ public class hit : MonoBehaviour
     public List<BoneProfile> bodyParts = new List<BoneProfile>();
 
     [Header("Settings")]
-    public Rigidbody2D hipsRigidbody;
-    public float damageThresholdToRagdoll = 20f;
+    [SerializeField] private Health _health;
+    [SerializeField] private RagdollReset ragdollReset;
+    [SerializeField] private Rigidbody2D mainRb; 
+    [SerializeField] private Rigidbody2D hipsRigidbody;
+    [SerializeField] private float damageThresholdToRagdoll = 20f;
     public float minKnockbackForce = 5f;
-
-
-    private float minDamageVelocity;
-    private float maxDamageVelocity;
-    
-    private Health _health;
-    private RagdollReset ragdollReset;
-    private Rigidbody2D mainRb; 
-    
     public bool stand = true; 
-    private Line line;
+    private float minDamageVelocity;
+    private float maxDamageVelocity = 15f;
+
 
     void Start()
     {
-        ragdollReset = GetComponent<RagdollReset>();
-        mainRb = GetComponent<Rigidbody2D>(); 
-        _health = GetComponentInChildren<Health>();
-        line = FindFirstObjectByType<Line>();
-        
         stand = true;
-
-        if (line != null)
-        {
-            maxDamageVelocity = line.maxPower;
-            minDamageVelocity = maxDamageVelocity * 0.3f;
-        }
-        else
-        {
-            maxDamageVelocity = 20f;
-            minDamageVelocity = 2f;
-        }
+        minDamageVelocity = maxDamageVelocity * 0.3f;
         SetupBodyParts();
     }
 
@@ -99,7 +79,7 @@ public class hit : MonoBehaviour
             
             if (weaponInfo._weapon.currentWeaponType == TypeWeapon.nade)
             {
-                baseDamage *= 0.2f;
+                baseDamage = weaponInfo._weapon.DamageCollisionNade;
                 baseForce *= 0.2f;
             }
 
@@ -159,11 +139,6 @@ public class hit : MonoBehaviour
         {
             _health.TakeDamage(damage);
         }
-        // else
-        // {
-        //     IDamageable damageable = GetComponent<IDamageable>();
-        //     if (damageable != null) damageable.TakeDamage(damage);
-        // }
 
         if (damage >= damageThresholdToRagdoll || knockback >= minKnockbackForce)
         {

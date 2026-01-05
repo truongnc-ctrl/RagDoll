@@ -11,7 +11,7 @@ public class Line : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] float force = 5f;
-    public float maxPower = 15f;
+    public float maxPower = 25f;
     [SerializeField] float minDragDistance = 0.5f;
 
     [Header("Trajectory Settings")]

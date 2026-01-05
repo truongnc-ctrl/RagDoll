@@ -74,8 +74,6 @@ public class TurnManager : MonoBehaviour
         isRagdolling = ragdollCount > 0;
     }
 
-
-
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -116,8 +114,6 @@ public class TurnManager : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         StartCoroutine(StartGameRoutine());
-
-
     }
 
     private void OnApplicationQuit()

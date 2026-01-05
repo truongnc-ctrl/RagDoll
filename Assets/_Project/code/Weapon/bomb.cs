@@ -48,38 +48,33 @@ public class Bomb : MonoBehaviour
         Vector3 explosionPos = transform.position;
 
         Collider2D[] objects = Physics2D.OverlapCircleAll(explosionPos, fieldOfImpact, layerMask);
-        HashSet<hit> damagedVictims = new HashSet<hit>();
+        HashSet<Collider2D> processedColliders = new HashSet<Collider2D>();
 
         foreach (Collider2D obj in objects)
         {
-            Rigidbody2D rb = obj.attachedRigidbody;
+            if (processedColliders.Contains(obj)) continue;
+            processedColliders.Add(obj);
             Vector2 direction = obj.transform.position - explosionPos;
             float distance = direction.magnitude;
-
             // Tính tỉ lệ lực theo khoảng cách (Gần = 1, Xa = 0)
             float proximity = Mathf.Clamp01(1 - (distance / fieldOfImpact));
-            
-            float finalDamage = maxDamage * proximity;
+            float baseDamage = maxDamage * proximity;
             float finalForce = maxKnockback * proximity;
             Vector2 pushDir = direction.normalized;
 
             if (obj.TryGetComponent<BodyPartHit>(out var partHit) && partHit.mainScript != null)
             {
-                float damageToApply = damagedVictims.Contains(partHit.mainScript) ? 0f : finalDamage;
+                float partMultiplier = partHit.damageMultiplier;
+                float finalDamage = baseDamage * partMultiplier;
+                finalDamage *= 0.5f;
                 float forceToApply = Mathf.Max(finalForce, partHit.mainScript.minKnockbackForce);
-                partHit.mainScript.ReceiveImpact(damageToApply, forceToApply, pushDir, partHit.transform);
-                damagedVictims.Add(partHit.mainScript);
+                partHit.mainScript.ReceiveImpact(finalDamage, forceToApply, pushDir, partHit.transform);
             }
             else if (obj.TryGetComponent<hit>(out var hitScript))
             {
-                if (!damagedVictims.Contains(hitScript))
-                {
-                    float forceToApply = Mathf.Max(finalForce, hitScript.minKnockbackForce);
-                    hitScript.ReceiveImpact(finalDamage, forceToApply, pushDir, obj.transform);
-                    damagedVictims.Add(hitScript);
-                }
+                 float forceToApply = Mathf.Max(finalForce, hitScript.minKnockbackForce);
+                 hitScript.ReceiveImpact(baseDamage, forceToApply, pushDir, obj.transform);
             }
-
         }
         Destroy(gameObject);
     }
